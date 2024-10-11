@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import za.co.neildutoit.deskbooking.db.Repository.BookingRepository;
@@ -181,7 +180,7 @@ public class DeskBookingService {
     }
 
     @Transactional
-    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings"}, allEntries = true)
+    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings", "allDesks"}, allEntries = true)
     public void reserveDeskForUser(long deskId, long userId) {
         log.info("reserveDeskForUser - deskId: {}, userId : {}", deskId, userId);
         User user = userService.getUser(userId);
@@ -209,7 +208,7 @@ public class DeskBookingService {
     }
 
     @Transactional
-    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings"}, allEntries = true)
+    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings", "allDesks"}, allEntries = true)
     public void cancelReservedDesk(long deskId) {
         log.info("cancelReservedDesk - deskId: {}", deskId);
         Optional<Booking> permanentBookingForUser = bookingRepository.findAllByDeskIdAndPermanentTrue(deskId);

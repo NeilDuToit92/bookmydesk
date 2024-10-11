@@ -42,6 +42,7 @@ function fetchAndDisplayDesks() {
                     deskCircle.textContent = desk.displayId;
                     deskCircle.setAttribute('data-id', desk.databaseId);
                     deskCircle.setAttribute('data-status', desk.status);
+                    deskCircle.setAttribute('data-user', desk.bookedBy);
                     let reserved = false;
 
                     if (desk.status === "RESERVED") {
@@ -213,6 +214,7 @@ function showPopup(element, overlay, reservePopup, cancelPopup) {
     const deskIdSpan = document.getElementById('deskId');
     const deskId2Span = document.getElementById('deskId2');
     const deskDbIdInput = document.getElementById('deskDbId');
+    const deskUser = document.getElementById('deskUser');
 
     overlay.style.display = 'flex';
     deskIdSpan.textContent = deskId;
@@ -225,6 +227,7 @@ function showPopup(element, overlay, reservePopup, cancelPopup) {
             cancelPopup.style.display = 'none';
             break;
         case "RESERVED":
+            deskUser.textContent = element.getAttribute('data-user');
             cancelPopup.style.display = 'block';
             reservePopup.style.display = 'none';
             break;

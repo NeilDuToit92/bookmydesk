@@ -28,6 +28,10 @@ public class BookingService {
     return bookingRepository.findAllByDate(date);
   }
 
+  public List<Booking> getPermanentBookings() {
+    return bookingRepository.findAllByPermanentTrue();
+  }
+
   public void bookDesk(LocalDate date, User user, Desk desk) {
     log.info("bookDesk - date: {}, user: {}, desk: {}", date, user, desk);
 
@@ -46,6 +50,12 @@ public class BookingService {
     int weeksAllowed = 4;
     if (date.isAfter(LocalDate.now().plusWeeks(weeksAllowed))) {
       throw new BookingException("Booking more than " + weeksAllowed + " weeks in advance is not allowed");
+    }
+
+    //A permanently reserved desk can not be booked
+    Optional<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndAndPermanentTrue(desk.getId());
+    if (permanentBookingForDesk.isPresent()) {
+      throw new BookingException("The desk is reserved");
     }
 
     //A desk can not be booked twice for the same day
@@ -71,7 +81,12 @@ public class BookingService {
   public void cancelBooking(LocalDate date, User user, Desk desk) {
     log.info("cancelBooking - date: {}, user: {}, desk: {}", date, user, desk);
 
-    //A user can only have one booking per day
+    //A permanently reserved desk can not be unbooked by normal user
+    Optional<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndAndPermanentTrue(desk.getId());
+    if (permanentBookingForDesk.isPresent()) {
+      throw new BookingException("The desk is reserved");
+    }
+
     Optional<Booking> existingBookingForUser = bookingRepository.findAllByUserIdAndDeskIdAndDate(user.getId(), desk.getId(), date);
     existingBookingForUser.ifPresent(bookingRepository::delete);
   }

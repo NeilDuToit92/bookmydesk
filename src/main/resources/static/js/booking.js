@@ -4,14 +4,42 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchAndDisplayDesks();
 
     document.getElementById('bookingDate').addEventListener('change', function () {
-        fetchAndDisplayDesks();
-        fetchBookedDates();
+        if (!blockHistoricAndFutureDates()) {
+            fetchAndDisplayDesks();
+            fetchBookedDates();
+        }
     });
 
     addSingleEventListeners();
     fetchBookedDates();
 
 });
+
+const maxDays = 29;
+
+function blockHistoricAndFutureDates() {
+    const input = document.getElementById('bookingDate');
+    const bookingDate = new Date(input.value);
+
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+    bookingDate.setHours(0, 0, 0, 0);
+
+    let maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + maxDays - 1);
+    maxDate.setHours(0, 0, 0, 0);
+
+    if (bookingDate < today) {
+        input.value = formatDate(today);
+        document.getElementById("bookingDate").dispatchEvent(new Event('change'));
+        return true;
+    } else if (bookingDate > maxDate) {
+        input.value = formatDate(maxDate);
+        document.getElementById("bookingDate").dispatchEvent(new Event('change'));
+        return true;
+    }
+    return false;
+}
 
 function fetchAndDisplayDesks() {
     const bookingDate = document.getElementById('bookingDate').value;
@@ -49,6 +77,10 @@ function fetchAndDisplayDesks() {
                         break;
                 }
 
+                if (desk.bookedByCurrentUser) {
+                    deskCircle.classList.add("desk-currentuser");
+                }
+
                 const popupInfo = document.createElement('div');
                 popupInfo.classList.add('popup-info');
                 // const statusParagraph = document.createElement('p');
@@ -74,7 +106,7 @@ function fetchAndDisplayDesks() {
 }
 
 function fetchBookedDates() {
-    fetch('/api/booking/dates?days=' + 14)
+    fetch('/api/booking/dates?days=' + maxDays)
         .then(response => response.json())
         .then(bookedDays => {
             displayWeekdays(bookedDays);
@@ -93,7 +125,6 @@ function showPopup(element, overlay, bookPopup, cancelPopup) {
     deskIdSpan.textContent = deskId;
     deskDbIdInput.value = deskDbId;
     let deskStatus = element.getAttribute('data-status');
-    console.log('deskStatus "' + deskStatus + '"');
     switch (deskStatus) {
         case "AVAILABLE":
             bookPopup.style.display = 'block';
@@ -300,6 +331,23 @@ function changeDate(days) {
     const inputDate = document.getElementById("bookingDate");
     let currentDate = new Date(inputDate.value);
 
+    if (days === 1) {
+        let maxDate = new Date();
+        maxDate.setDate(maxDate.getDate() + maxDays - 1);
+        maxDate.setHours(0, 0, 0, 0);
+        if (currentDate > maxDate) {
+            return;
+        }
+    }
+
+    if (days === -1) {
+        let minDate = new Date();
+        minDate.setDate(minDate.getDate());
+        if (currentDate < minDate) {
+            return;
+        }
+    }
+
     // Skip weekends
     const weekendDays = [0, 6]; // Sunday and Saturday
     let skipDays = 0;
@@ -321,58 +369,74 @@ function getMonday(date) {
 }
 
 function displayWeekdays(bookedDays) {
-    console.log(bookedDays);
     const weekdaysDiv = document.getElementById("weekdays");
     weekdaysDiv.innerHTML = ""; // Clear previous content
 
     const inputDate = new Date(document.getElementById("bookingDate").value);
-    const startingMonday = getMonday(new Date());
+    // const startingDay = getMonday(new Date());
+    const startingDay = new Date();
 
     const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const weekendDays = [0, 6]; // Sunday and Saturday
+    const skipWeekends = true;
 
     // Iterate over 14 days (2 weeks)
-    for (let i = 0; i < 14; i++) {
-        const currentDate = new Date(startingMonday);
+    for (let i = 0; i < maxDays; i++) {
+        const currentDate = new Date(startingDay);
         currentDate.setDate(currentDate.getDate() + i);
-
-        const dayOfWeek = daysOfWeek[currentDate.getDay()];
-        const dayOfMonth = currentDate.getDate();
 
         const dayBlock = document.createElement("div");
 
-        const formattedDate = formatDate(currentDate);
-
-        // Check if the current date is in the bookedDays list
-        if (bookedDays.includes(formattedDate)) {
-            dayBlock.classList.add('day-booked');
-        }
-
-        const dayName = document.createElement("div");
-        dayName.classList.add("day-name");
-        dayName.textContent = dayOfWeek;
-
-        const dayDate = document.createElement("div");
-        dayDate.classList.add("day-date");
-        dayDate.textContent = dayOfMonth;
-
-        dayBlock.appendChild(dayName);
-        dayBlock.appendChild(dayDate);
-
-        dayBlock.setAttribute("data-date", currentDate.toISOString().slice(0, 10));
-
-        if (currentDate.toDateString() === inputDate.toDateString()) {
-            dayBlock.classList.add("current-day");
-        }
-
-        if (weekendDays.includes(currentDate.getDay())) {
-            dayBlock.classList.add("weekend-block");
+        if (skipWeekends && weekendDays.includes(currentDate.getDay())) {
+            dayBlock.classList.add('day-skipped');
         } else {
-            dayBlock.classList.add("day-block");
-            dayBlock.addEventListener("click", function () {
-                document.getElementById("bookingDate").value = this.getAttribute("data-date");
-                document.getElementById("bookingDate").dispatchEvent(new Event('change')); // Trigger change event
-            });
+
+            const dayOfWeek = daysOfWeek[currentDate.getDay()];
+            const dayOfMonth = currentDate.getDate();
+
+            const formattedDate = formatDate(currentDate);
+
+            // Check if the current date is in the bookedDays list
+            if (bookedDays.includes(formattedDate)) {
+                dayBlock.classList.add('day-booked');
+            }
+
+            const dayName = document.createElement("div");
+            dayName.classList.add("day-name");
+            dayName.textContent = dayOfWeek;
+
+            const dayDate = document.createElement("div");
+            dayDate.classList.add("day-date");
+            dayDate.textContent = dayOfMonth;
+
+            dayBlock.appendChild(dayName);
+            dayBlock.appendChild(dayDate);
+
+            dayBlock.setAttribute("data-date", currentDate.toISOString().slice(0, 10));
+
+            if (currentDate.toDateString() === inputDate.toDateString()) {
+                dayBlock.classList.add("selected-day");
+            }
+
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            currentDate.setHours(0, 0, 0, 0);
+
+            if (currentDate.toDateString() === today.toDateString()) {
+                dayBlock.classList.add("current-day");
+            }
+
+            if (currentDate < today) {
+                dayBlock.classList.add("historic-block");
+            } else if (weekendDays.includes(currentDate.getDay())) {
+                dayBlock.classList.add("weekend-block");
+            } else {
+                dayBlock.classList.add("day-block");
+                dayBlock.addEventListener("click", function () {
+                    document.getElementById("bookingDate").value = this.getAttribute("data-date");
+                    document.getElementById("bookingDate").dispatchEvent(new Event('change')); // Trigger change event
+                });
+            }
         }
 
         weekdaysDiv.appendChild(dayBlock);
@@ -403,14 +467,14 @@ function showToast(message, type) {
     }
 
     // Hide the toast after 4 seconds
-    toastTimeoutId = setTimeout(function() {
+    toastTimeoutId = setTimeout(function () {
         toast.classList.add('hide');
 
         // Remove the 'hide' class after the animation ends to reset the toast
-        toast.addEventListener('transitionend', function() {
+        toast.addEventListener('transitionend', function () {
             if (toast.classList.contains('hide')) {
                 toast.className = 'toast'; // Reset to base class
             }
-        }, { once: true });
+        }, {once: true});
     }, 4000);
 }

@@ -69,6 +69,10 @@ body {
     background-color: rgba(0, 0, 255, 0.5);
 }
 
+.desk-currentuser {
+    background-color: rgba(255, 0, 255, 1);
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
@@ -314,6 +318,14 @@ hr {
     text-align: center;
 }
 
+.historic-block {
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 35px;
+    background-color: #bfbfbf;
+    text-align: center;
+}
+
 .day-block:hover {
     background-color: #f0f0f0;
 }
@@ -326,12 +338,21 @@ hr {
     background-color: rgba(0, 175, 0, 0.5);
 }
 
+.day-skipped {
+    display: inline-block;
+    width: 5px;
+}
+
 .day-date {
     font-size: larger;
 }
 
 .current-day {
     font-weight: bold;
+}
+
+.selected-day {
+    border: 3px solid;
 }
 
 .toast {

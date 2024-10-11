@@ -70,6 +70,7 @@ public class DeskService {
         }
 
         List<Booking> bookings = bookingService.getBookingsForDate(date);
+        bookings.addAll(bookingService.getPermanentBookings());
         User currentUser = userService.getCurrentUser();
 
         for (Desk desk : deskRepository.findAll()) {
@@ -95,11 +96,11 @@ public class DeskService {
 
             if (bookingForDesk != null) {
                 if (bookingForDesk.isPermanent()) {
-                    dto.setBookedByCurrentUser(bookingForCurrentUser);
                     dto.setStatus(DeskStatus.RESERVED);
                 } else {
                     dto.setStatus(DeskStatus.BOOKED);
                 }
+                dto.setBookedByCurrentUser(bookingForCurrentUser);
                 dto.setBookedBy(bookingForDesk.getUser().getDisplayName());
             }
 

@@ -13,8 +13,13 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByDate(LocalDate date);
 
+    List<Booking> findAllByPermanentTrue();
+
     @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.date = ?2")
     Optional<Booking> findAllByDeskIdAndDate(long deskId, LocalDate date);
+
+    @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.permanent = true")
+    Optional<Booking> findAllByDeskIdAndAndPermanentTrue(long deskId);
 
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.date = ?2")
     Optional<Booking> findAllByUserIdAndDate(long userId, LocalDate date);

@@ -15,10 +15,10 @@
         <h2 th:text="'Welcome ' + ${name}"></h2>
         <div class="header-content">
             <label>
-                <input id="bookingDate" type="date">
+                <input id="bookingDate" type="date" style="display: none">
             </label>
-            <button id="prevDay" onclick="changeDate(-1)">&lt;</button>
-            <button id="nextDay" onclick="changeDate(1)">&gt;</button>
+            <button id="prevDay" onclick="changeDate(-1)"  style="display: none">&lt;</button>
+            <button id="nextDay" onclick="changeDate(1)"  style="display: none">&gt;</button>
             <div id="weekdays">
                 <!-- Days of the week will be added here -->
             </div>

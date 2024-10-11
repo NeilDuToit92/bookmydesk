@@ -326,12 +326,11 @@ hr {
 }
 
 .current-day {
-    background-color: lightblue;
     font-weight: bold;
 }
 
-.current-day {
-    background-color: rgba(255, 0, 0, 0.86);
+.booked-day {
+    background-color: #01468e;
 }
 
 .toast {

@@ -5,11 +5,13 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('bookingDate').addEventListener('change', function () {
         fetchAndDisplayDesks();
-        displayWeekdays();
+        console.log("AAA");
+        fetchBookedDates();
     });
 
     addSingleEventListeners();
-    displayWeekdays();
+    console.log("BBB");
+    fetchBookedDates();
 
 });
 
@@ -73,6 +75,15 @@ function fetchAndDisplayDesks() {
         .catch(error => console.error('Error fetching desk data:', error));
 }
 
+function fetchBookedDates() {
+    fetch('/api/booking/dates?days=' + 14)
+        .then(response => response.json())
+        .then(bookedDays => {
+            displayWeekdays(bookedDays);
+        })
+        .catch(error => console.error('Error fetching user booked dates:', error));
+}
+
 function showPopup(element, overlay, bookPopup, cancelPopup) {
     let deskId = element.textContent;
     let deskDbId = element.getAttribute('data-id');
@@ -119,7 +130,7 @@ function addRecurringEventListeners() {
 
     document.querySelectorAll('.desk-div').forEach(function (desk) {
         const popup = desk.querySelector('.popup-info');
-        desk.addEventListener('mouseenter', function (event) {
+        desk.addEventListener('mouseenter', function () {
             let viewportRight = window.scrollX + window.innerWidth;
             let viewportBottom = window.scrollY + window.innerHeight;
 
@@ -147,7 +158,7 @@ function addRecurringEventListeners() {
             }
 
         });
-        desk.addEventListener('mouseleave', function (event) {
+        desk.addEventListener('mouseleave', function () {
             popup.style.display = 'none';
             popup.style.left = '';
             popup.style.top = '';
@@ -156,7 +167,6 @@ function addRecurringEventListeners() {
 }
 
 function addSingleEventListeners() {
-    const desks = document.querySelectorAll('.desk');
     const overlay = document.getElementById('overlay');
     const bookPopup = document.getElementById('bookPopup');
     const cancelPopup = document.getElementById('cancelPopup');
@@ -258,11 +268,11 @@ function addSingleEventListeners() {
 }
 
 function limitToWeekdays() {
-    var input = document.getElementById('bookingDate');
-    var selectedDate = new Date(input.value);
+    const input = document.getElementById('bookingDate');
+    const selectedDate = new Date(input.value);
 
     // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-    var dayOfWeek = selectedDate.getDay();
+    const dayOfWeek = selectedDate.getDay();
 
     // If selected date is Saturday or Sunday, adjust it to next Monday
     if (dayOfWeek === 0) { // Sunday
@@ -302,8 +312,6 @@ function changeDate(days) {
 
     inputDate.value = currentDate.toISOString().slice(0, 10);
     inputDate.dispatchEvent(new Event('change'));
-
-    displayWeekdays();
 }
 
 function getMonday(date) {
@@ -312,7 +320,8 @@ function getMonday(date) {
     return new Date(date.setDate(diff));
 }
 
-function displayWeekdays() {
+function displayWeekdays(bookedDays) {
+    console.log(bookedDays);
     const weekdaysDiv = document.getElementById("weekdays");
     weekdaysDiv.innerHTML = ""; // Clear previous content
 
@@ -356,7 +365,6 @@ function displayWeekdays() {
             dayBlock.addEventListener("click", function () {
                 document.getElementById("bookingDate").value = this.getAttribute("data-date");
                 document.getElementById("bookingDate").dispatchEvent(new Event('change')); // Trigger change event
-                displayWeekdays(); // Update the weekdays display
             });
         }
 

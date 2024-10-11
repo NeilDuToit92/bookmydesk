@@ -22,6 +22,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1")
     List<Booking> findAllByUserId(long userId);
 
+    @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.date <= ?2")
+    List<Booking> findAllByUserIdAndDateUpTo(long userId, LocalDate date);
+
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.desk.id = ?2 and b.date = ?3")
     Optional<Booking> findAllByUserIdAndDeskIdAndDate(long userId, long deskId, LocalDate date);
 }

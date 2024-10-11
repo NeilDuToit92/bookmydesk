@@ -19,29 +19,29 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
 
-    private final BookingService bookingService;
-    private final UserService userService;
-    private final DeskService deskService;
+  private final BookingService bookingService;
+  private final UserService userService;
+  private final DeskService deskService;
 
-    //Book seat
-    @PostMapping("/{deskId}")
-    public String bookDesk(@PathVariable long deskId, @RequestParam LocalDate date) {
-        log.info("bookDesk - deskId: {}, date: {}", deskId, date);
-        User user = userService.getCurrentUser();
-        Desk desk = deskService.get(deskId);
-        bookingService.bookDesk(date, user, desk);
-        return "OK";
-    }
+  //Book seat
+  @PostMapping("/{deskId}")
+  public String bookDesk(@PathVariable long deskId, @RequestParam LocalDate date) {
+    log.info("bookDesk - deskId: {}, date: {}", deskId, date);
+    User user = userService.getCurrentUser();
+    Desk desk = deskService.get(deskId);
+    bookingService.bookDesk(date, user, desk);
+    return "OK";
+  }
 
-    //Cancel Booking - current user
-    @DeleteMapping("/{deskId}")
-    public String cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
-        log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
-        User user = userService.getCurrentUser();
-        Desk desk = deskService.get(deskId);
-        bookingService.cancelBooking(date, user, desk);
-        return "OK";
-    }
+  //Cancel Booking - current user
+  @DeleteMapping("/{deskId}")
+  public String cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
+    log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
+    User user = userService.getCurrentUser();
+    Desk desk = deskService.get(deskId);
+    bookingService.cancelBooking(date, user, desk);
+    return "OK";
+  }
 
     //Get all bookings for person
     @RequestMapping("/all")
@@ -50,5 +50,11 @@ public class BookingController {
         return bookingService.getAllByUser(user.getId());
     }
 
-    //Booking report - All persons for date range
+  @RequestMapping("/dates")
+  public List<LocalDate> getBookedDatesForUser(@RequestParam("days") Integer days) {
+    User user = userService.getCurrentUser();
+    return bookingService.getBookedDatesByUser(user.getId(), days);
+  }
+
+  //Booking report - All persons for date range
 }

@@ -1,4 +1,4 @@
-function formatDate(dateString) {
+function formatDateTime(dateString) {
     if (dateString) {
         const date = new Date(dateString);
         const year = date.getFullYear();
@@ -10,4 +10,11 @@ function formatDate(dateString) {
         return `${year}-${month}-${day} ${hours}:${minutes}`;
     }
     return '-';
+}
+
+function formatDate(date) {
+    let year = date.getFullYear();
+    let month = (date.getMonth() + 1).toString().padStart(2, '0');
+    let day = date.getDate().toString().padStart(2, '0');
+    return `${year}-${month}-${day}`;
 }

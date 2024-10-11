@@ -50,7 +50,7 @@ function dataTable() {
             {
                 targets: 4,
                 render: function (data, type, row) {
-                    return formatDate(data);
+                    return formatDateTime(data);
                 }
             },
         ]

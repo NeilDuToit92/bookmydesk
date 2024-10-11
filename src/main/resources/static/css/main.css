@@ -199,7 +199,6 @@ button:hover {
     border-radius: 10px;
     position: fixed;
     z-index: 1;
-    left: 50%;
     bottom: 30px;
     font-size: 17px;
     padding: 16px;
@@ -209,6 +208,10 @@ button:hover {
     transition: transform 0.5s ease, opacity 0.5s ease;
     font-weight: bold;
     min-width: 180px;
+    margin: 0 auto;
+    right: 0;
+    left: 0;
+    width: fit-content;
 }
 
 .toast-success {

@@ -59,6 +59,16 @@ public class PageController {
     return "users";
   }
 
+  @RequestMapping(path = {"/bookingadmin"})
+  public String bookingAdmin(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    User user = userService.getCurrentUser();
+    if (user == null || !user.isAdmin()) {
+      return "redirect:/home";
+    }
+    model.addAttribute("name", name);
+    return "bookingadmin";
+  }
+
 
 
   @RequestMapping(path = {"/admin"})

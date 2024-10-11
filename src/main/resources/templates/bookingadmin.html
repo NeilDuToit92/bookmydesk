@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Users</title>
+    <title>Desk Booking Admin</title>
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
-    <link th:href="@{/css/users.css}" rel="stylesheet"/>
+    <link th:href="@{/css/bookingadmin.css}" rel="stylesheet"/>
 </head>
 <body>
-<script type="text/javascript" th:src="@{/js/users.js}"></script>
+<script type="text/javascript" th:src="@{/js/bookingadmin.js}"></script>
 <div class="sticky-header">
     <div class="header-content">
-        <h2 th:text="'Welcome ' + ${name}"></h2>
-        <h2>Users</h2>
+        <h2 th:text="'Welcome ' + ${name} + ' (ADMIN)'"></h2>
+        <h2>Booking admin</h2>
         <div class="menu">
             <button onclick="location.href='/admin'">Back</button>
             <button onclick="location.href='/logout'">Logout</button>
@@ -21,7 +21,8 @@
     </div>
 </div>
 
-<div id="contentDiv" class="contentDiv"></div>
+<h2>TODO</h2>
 
+<div id="toast" class="toast"></div>
 </body>
 </html>

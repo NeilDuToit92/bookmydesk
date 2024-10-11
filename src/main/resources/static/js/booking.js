@@ -5,12 +5,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('bookingDate').addEventListener('change', function () {
         fetchAndDisplayDesks();
-        console.log("AAA");
         fetchBookedDates();
     });
 
     addSingleEventListeners();
-    console.log("BBB");
     fetchBookedDates();
 
 });
@@ -204,6 +202,7 @@ function addSingleEventListeners() {
                 overlay.style.display = 'none';
                 bookPopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchBookedDates();
                 showToast("Booking success", "success")
             })
             .catch(error => {
@@ -233,6 +232,7 @@ function addSingleEventListeners() {
                 overlay.style.display = 'none';
                 cancelPopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchBookedDates();
                 showToast("Cancellation success", "success")
             })
             .catch(error => {
@@ -340,6 +340,13 @@ function displayWeekdays(bookedDays) {
         const dayOfMonth = currentDate.getDate();
 
         const dayBlock = document.createElement("div");
+
+        const formattedDate = formatDate(currentDate);
+
+        // Check if the current date is in the bookedDays list
+        if (bookedDays.includes(formattedDate)) {
+            dayBlock.classList.add('day-booked');
+        }
 
         const dayName = document.createElement("div");
         dayName.classList.add("day-name");

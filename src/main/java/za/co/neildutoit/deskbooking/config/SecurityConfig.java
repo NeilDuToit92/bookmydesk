@@ -32,6 +32,8 @@ public class SecurityConfig {
                         )
                 )
                 .csrf(AbstractHttpConfigurer::disable)
+                .logout(logout -> logout.logoutSuccessUrl("/home"))
+
         ;
 
         return http.build();

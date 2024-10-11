@@ -13,14 +13,27 @@
 <div class="sticky-header">
     <div class="header-content">
         <h2 th:text="'Welcome ' + ${name}"></h2>
-        <label>
-            <input id="bookingDate" type="date">
-        </label>
-        <button id="prevDay" onclick="changeDate(-1)">&lt;</button>
-        <button id="nextDay" onclick="changeDate(1)">&gt;</button>
-        <div id="weekdays">
-            <!-- Days of the week will be added here -->
+        <div class="header-content">
+            <label>
+                <input id="bookingDate" type="date">
+            </label>
+            <button id="prevDay" onclick="changeDate(-1)">&lt;</button>
+            <button id="nextDay" onclick="changeDate(1)">&gt;</button>
+            <div id="weekdays">
+                <!-- Days of the week will be added here -->
+            </div>
         </div>
+        <div class="menu">
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+<!--        <div class="menu">-->
+<!--            <button id="menuButton">Menu</button>-->
+<!--            <div class="dropdown">-->
+<!--                <a href="/profile">Profile</a>-->
+<!--                <a href="/settings">Settings</a>-->
+<!--                <a href="/logout">Logout</a>-->
+<!--            </div>-->
+<!--        </div>-->
     </div>
 </div>
 

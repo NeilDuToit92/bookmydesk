@@ -87,6 +87,7 @@ body {
 .header-content {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 .header-content h2 {
@@ -321,16 +322,16 @@ hr {
     font-size: smaller;
 }
 
+.day-booked {
+    background-color: rgba(0, 175, 0, 0.5);
+}
+
 .day-date {
     font-size: larger;
 }
 
 .current-day {
     font-weight: bold;
-}
-
-.booked-day {
-    background-color: #01468e;
 }
 
 .toast {
@@ -372,4 +373,49 @@ hr {
     opacity: 0;
     transform: translateY(100%);
     transition: transform 0.5s ease, opacity 0.5s ease;
+}
+
+menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.menu button {
+    background-color: #444;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.menu button:hover {
+    background-color: #555;
+}
+
+.dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: #333;
+    display: none;
+    flex-direction: column;
+    width: 150px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.dropdown a {
+    color: #fff;
+    padding: 10px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {
+    background-color: #555;
+}
+
+.menu:hover .dropdown {
+    display: flex;
 }

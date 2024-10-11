@@ -1,10 +1,7 @@
 package za.co.neildutoit.deskbooking.db.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,4 +27,17 @@ public class User {
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Booking> bookings = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", oidcId='" + oidcId + '\'' +
+                ", email='" + email + '\'' +
+                ", displayName='" + displayName + '\'' +
+                ", isAdmin=" + isAdmin +
+                ", enabled=" + enabled +
+                ", bookings=" + bookings.size() +
+                '}';
+    }
 }

@@ -1,11 +1,9 @@
 package za.co.neildutoit.deskbooking.controllers;
 
+import org.springframework.web.bind.annotation.*;
 import za.co.neildutoit.deskbooking.dto.DeskDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 import za.co.neildutoit.deskbooking.service.DeskBookingService;
 
 import java.time.LocalDate;
@@ -28,5 +26,11 @@ public class DeskController {
   public List<DeskDto> getAllDesks() {
     log.info("getAllDesks");
     return deskBookingService.getAllDesks();
+  }
+
+  @PostMapping(value = "/save")
+  public List<DeskDto> saveDesks(@RequestBody List<DeskDto> desks) {
+    log.info("saveDesks - desks: {}", desks);
+    return deskBookingService.saveDesks();
   }
 }

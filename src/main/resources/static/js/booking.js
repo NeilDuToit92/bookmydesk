@@ -324,7 +324,7 @@ function addSingleEventListeners() {
             .then(response => {
                 if (!response.ok) {
                     return response.json().then(errorBody => {
-                        throw new Error(errorBody.message || 'Failed to book seat');
+                        throw new Error(errorBody.message || 'Failed to cancel booking');
                     });
                 }
                 overlay.style.display = 'none';
@@ -342,9 +342,11 @@ function addSingleEventListeners() {
     });
 
     document.getElementById('overlay').addEventListener('click', function (event) {
-        bookPopup.style.display = 'none';
-        cancelPopup.style.display = 'none';
-        overlay.style.display = 'none';
+        if (event.target === this) {
+            bookPopup.style.display = 'none';
+            cancelPopup.style.display = 'none';
+            overlay.style.display = 'none';
+        }
     });
 
     document.addEventListener('click', function (event) {
@@ -485,40 +487,4 @@ function displayWeekdays(bookedDays) {
 
         weekdaysDiv.appendChild(dayBlock);
     }
-}
-
-let toastTimeoutId;
-
-function showToast(message, type) {
-    const toast = document.getElementById('toast');
-    toast.className = 'toast'; // Reset to base class
-
-    // Set the message and type class
-    if (type === 'success') {
-        toast.classList.add('toast-success');
-    } else if (type === 'error') {
-        toast.classList.add('toast-error');
-    }
-
-    toast.textContent = message;
-
-    // Show the toast with animation
-    toast.classList.add('show');
-
-    // Clear any existing timeout to avoid multiple hides
-    if (toastTimeoutId) {
-        clearTimeout(toastTimeoutId);
-    }
-
-    // Hide the toast after 4 seconds
-    toastTimeoutId = setTimeout(function () {
-        toast.classList.add('hide');
-
-        // Remove the 'hide' class after the animation ends to reset the toast
-        toast.addEventListener('transitionend', function () {
-            if (toast.classList.contains('hide')) {
-                toast.className = 'toast'; // Reset to base class
-            }
-        }, {once: true});
-    }, 4000);
 }

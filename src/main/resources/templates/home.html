@@ -10,6 +10,7 @@
 </head>
 <body>
 <script th:if="${!heatmap}" type="text/javascript" th:src="@{/js/booking.js}"></script>
+<script type="text/javascript" th:src="@{/js/toast.js}"></script>
 <script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmaplib.min.js}"></script>
 <script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmap.js}"></script>
 <div class="sticky-header">

@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
     fetchAndDisplayDesks();
+    fetchUsersWithoutReservedDesks();
     addSingleEventListeners();
 });
 
@@ -30,7 +31,6 @@ function fetchAndDisplayDesks() {
         })
         .then(deskData => {
             deskData.forEach(desk => {
-                    console.log(desk);
                     const deskDiv = document.createElement('div');
                     deskDiv.classList.add('desk-div');
                     deskDiv.style.position = 'absolute';
@@ -55,7 +55,6 @@ function fetchAndDisplayDesks() {
                     popupInfo.classList.add('popup-info');
                     const bookedByParagraph = document.createElement('p');
 
-
                     if (reserved) {
                         bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
                     } else {
@@ -74,6 +73,34 @@ function fetchAndDisplayDesks() {
             );
 
             addRecurringEventListeners();
+        })
+        .catch(error => {
+            if (error.name === 'AbortError') {
+                console.log('Fetch aborted');
+            } else {
+                console.error('Error fetching desk data:', error);
+            }
+        });
+}
+
+function fetchUsersWithoutReservedDesks() {
+    fetch('/api/booking/permanent/users/unassigned')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(users => {
+            const userDropdown = document.getElementById('reserveUserDropdown');
+            userDropdown.innerHTML = ''; // Clear existing options
+
+            users.forEach(user => {
+                const option = document.createElement('option');
+                option.value = user.id; // Set user ID as value
+                option.textContent = user.displayName; // Set display name as text
+                userDropdown.appendChild(option); // Add option to dropdown
+            });
         })
         .catch(error => {
             if (error.name === 'AbortError') {
@@ -106,8 +133,9 @@ function addSingleEventListeners() {
     confirmBooking.addEventListener('click', function () {
 
         const deskId = document.getElementById('deskDbId').value;
+        const userId = document.getElementById('reserveUserDropdown').value;
 
-        const url = '/api/booking/' + deskId + '/reserve?userId=' + '0';
+        const url = '/api/booking/' + deskId + '/reserve?userId=' + userId;
 
         // Send a POST request using fetch API
         fetch(url, {
@@ -122,7 +150,6 @@ function addSingleEventListeners() {
                 overlay.style.display = 'none';
                 reservePopup.style.display = 'none';
                 fetchAndDisplayDesks();
-                fetchBookedDates();
                 showToast("Reservation success", "success")
             })
             .catch(error => {
@@ -133,39 +160,40 @@ function addSingleEventListeners() {
             });
     });
 
-    // cancelBooking.addEventListener('click', function () {
-    //     const deskId = document.getElementById('deskDbId').value;
-    //
-    //     const url = '/api/booking/' + deskId + '?date=' + encodeURIComponent(date);
-    //
-    //     // Send a POST request using fetch API
-    //     fetch(url, {
-    //         method: 'DELETE'
-    //     })
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 return response.json().then(errorBody => {
-    //                     throw new Error(errorBody.message || 'Failed to book seat');
-    //                 });
-    //             }
-    //             overlay.style.display = 'none';
-    //             cancelPopup.style.display = 'none';
-    //             fetchAndDisplayDesks();
-    //             fetchBookedDates();
-    //             showToast("Cancellation success", "success")
-    //         })
-    //         .catch(error => {
-    //             overlay.style.display = 'none';
-    //             cancelPopup.style.display = 'none';
-    //             fetchAndDisplayDesks();
-    //             showToast(error, "error")
-    //         });
-    // });
+    cancelBooking.addEventListener('click', function () {
+        const deskId = document.getElementById('deskDbId').value;
+
+        const url = '/api/booking/' + deskId + '/reserve';
+
+        // Send a POST request using fetch API
+        fetch(url, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(errorBody => {
+                        throw new Error(errorBody.message || 'Failed to cancel reservation');
+                    });
+                }
+                overlay.style.display = 'none';
+                cancelPopup.style.display = 'none';
+                fetchAndDisplayDesks();
+                showToast("Cancellation success", "success")
+            })
+            .catch(error => {
+                overlay.style.display = 'none';
+                cancelPopup.style.display = 'none';
+                fetchAndDisplayDesks();
+                showToast(error, "error")
+            });
+    });
 
     document.getElementById('overlay').addEventListener('click', function (event) {
-        reservePopup.style.display = 'none';
-        cancelPopup.style.display = 'none';
-        overlay.style.display = 'none';
+        if (event.target === this) {
+            reservePopup.style.display = 'none';
+            cancelPopup.style.display = 'none';
+            overlay.style.display = 'none';
+        }
     });
 
     document.addEventListener('click', function (event) {
@@ -194,9 +222,11 @@ function showPopup(element, overlay, reservePopup, cancelPopup) {
     switch (deskStatus) {
         case "AVAILABLE":
             reservePopup.style.display = 'block';
+            cancelPopup.style.display = 'none';
             break;
         case "RESERVED":
             cancelPopup.style.display = 'block';
+            reservePopup.style.display = 'none';
             break;
     }
 }

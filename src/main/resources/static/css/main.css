@@ -256,3 +256,23 @@ button:hover {
     padding: 3px;
     margin: 0;
 }
+
+select {
+    padding: 5px 30px 5px 5px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Add a custom arrow for the dropdown */
+select::-ms-expand {
+    display: none; /* Remove default dropdown arrow in IE */
+}
+
+select::after {
+    content: '▼'; /* Custom dropdown arrow */
+    position: absolute;
+    right: 10px;
+    pointer-events: none; /* Allow clicks to go through */
+}

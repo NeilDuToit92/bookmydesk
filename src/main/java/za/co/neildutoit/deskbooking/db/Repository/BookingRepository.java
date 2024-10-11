@@ -1,5 +1,6 @@
 package za.co.neildutoit.deskbooking.db.Repository;
 
+import org.springframework.cache.annotation.Cacheable;
 import za.co.neildutoit.deskbooking.db.entity.Booking;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByDate(LocalDate date);
 
+    @Cacheable(value = "permanentBookings")
     List<Booking> findAllByPermanentTrue();
 
     @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.date = ?2")
@@ -22,7 +24,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByDeskIdAndDateOnOrAfter(long deskId, LocalDate date);
 
     @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.permanent = true")
-    Optional<Booking> findAllByDeskIdAndAndPermanentTrue(long deskId);
+    Optional<Booking> findAllByDeskIdAndPermanentTrue(long deskId);
+
+    @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.permanent = true")
+    Optional<Booking> findAllByUserIdAndPermanentTrue(long userId);
 
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.date = ?2")
     Optional<Booking> findAllByUserIdAndDate(long userId, LocalDate date);

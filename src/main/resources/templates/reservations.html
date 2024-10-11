@@ -10,6 +10,7 @@
 </head>
 <body>
 <script type="text/javascript" th:src="@{/js/reservations.js}"></script>
+<script type="text/javascript" th:src="@{/js/toast.js}"></script>
 <div class="sticky-header">
     <div class="header-content">
         <h2 th:text="'Welcome ' + ${name}"></h2>
@@ -28,13 +29,15 @@
 <div class="overlay" id="overlay">
     <input type="hidden" id="deskDbId">
     <div class="popup" id="reservePopup">
-        <h3>Permanently Reserve Desk <span id="deskId"></span> for user dropdown</h3>
+        <h3 style="display: inline">Permanently Reserve Desk <span id="deskId"></span> for</h3>
+        <label for="reserveUserDropdown" style="display: inline; margin-left: 5px;"></label>
+        <select id="reserveUserDropdown"></select><br/>
         <button type="button" id="confirmBooking">Confirm</button>
         <button type="button" id="closePopupBooking">Close</button>
     </div>
 
     <div class="popup" id="cancelPopup">
-        <h3>Cancel Permanent Reservation for Desk <span id="deskId2"></span> for user</span></h3>
+        <h3>Cancel Permanent Reservation for Desk for <span id="deskId2"></span> user dropdown</span></h3>
         <button type="button" id="cancelBooking">Cancel Reservation</button>
         <button type="button" id="closePopupCancel">Close</button>
     </div>

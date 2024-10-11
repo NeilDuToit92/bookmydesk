@@ -1,10 +1,7 @@
 package za.co.neildutoit.deskbooking.db.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.lang.Nullable;
 
 import java.time.LocalDate;
@@ -13,6 +10,7 @@ import java.time.LocalDate;
  * A reservation is for when a desk i
  */
 @Data
+@ToString
 @Entity
 @Builder
 @AllArgsConstructor

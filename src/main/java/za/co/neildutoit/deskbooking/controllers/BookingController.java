@@ -4,6 +4,7 @@ import za.co.neildutoit.deskbooking.db.entity.User;
 import za.co.neildutoit.deskbooking.dto.BookingDto;
 import za.co.neildutoit.deskbooking.dto.CoordinateDto;
 import za.co.neildutoit.deskbooking.dto.MessageDto;
+import za.co.neildutoit.deskbooking.dto.UserDto;
 import za.co.neildutoit.deskbooking.service.DeskBookingService;
 import za.co.neildutoit.deskbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,14 @@ public class BookingController {
     return new MessageDto("OK");
   }
 
+  //Cancel Booking - current user
+  @DeleteMapping("/{deskId}")
+  public MessageDto cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
+    log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
+    deskBookingService.cancelBooking(date, deskId);
+    return new MessageDto("OK");
+  }
+
   @PostMapping("/{deskId}/reserve")
   public MessageDto reserveDesk(@PathVariable long deskId, @RequestParam long userId) {
     log.info("reserveDesk - deskId: {}, userId: {}", deskId, userId);
@@ -38,13 +47,15 @@ public class BookingController {
     return new MessageDto("OK");
   }
 
-  //Cancel Booking - current user
-  @DeleteMapping("/{deskId}")
-  public MessageDto cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
-    log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
-    deskBookingService.cancelBooking(date, deskId);
+  @DeleteMapping("/{deskId}/reserve")
+  public MessageDto cancelReservedDesk(@PathVariable long deskId) {
+    log.info("cancelReservedDesk - deskId: {}", deskId);
+    userService.checkAdminUser();
+    deskBookingService.cancelReservedDesk(deskId);
     return new MessageDto("OK");
   }
+
+
 
   //Get all bookings for person
   @RequestMapping("/all")
@@ -56,6 +67,11 @@ public class BookingController {
   @RequestMapping("/permanent/all")
   public List<BookingDto> getAllPermanentReservations() {
     return deskBookingService.getAllPermanentBookings();
+  }
+
+  @RequestMapping("/permanent/users/unassigned")
+  public List<UserDto> getAllUsersWithoutPermanentReservations() {
+    return deskBookingService.getAllUsersWithoutPermanentBookings();
   }
 
   @RequestMapping("/dates")

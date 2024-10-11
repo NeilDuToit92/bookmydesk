@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Booking Help</title>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name}"></h2>
+        <h2>Help page</h2>
+        <div class="menu">
+            <button onclick="location.href='/home'">Back</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+    </div>
+</div>
+<div style="width: 100%; background-color: darkred; color: white">
+    <h2 style="padding: 10px">This page is still a work in progress and some information may be incorrect</h2>
+</div>
+
+<div id="contentDiv" class="contentDiv">
+    <h2>Booking a desk</h2>
+    <ul>
+        <li>1. Select the date you want to book for</li>
+        <li>&nbsp - The '+' and '-' buttons on the keyboard can be used to quickly navigate between dates</li>
+        <li>2. Click on the desk you want to book</li>
+        <li>&nbsp - Green: The desk is available</li>
+        <li>&nbsp - Red: The desk has been booked by someone else</li>
+        <li>&nbsp - Pink: The desk has been booked by you</li>
+        <li>&nbsp - Purple: The desk has been permanently reserved for someone else</li>
+        <li>&nbsp - Orange: The desk has been permanently reserved for you</li>
+        <li>3. Click 'Confirm' to confirm the booking</li>
+        <li>4. A message will display indicating a successful booking and the desk will turn purple</li>
+        <li>5. The date navigation bar will indicate green for the days you have a booking for</li>
+    </ul>
+    <h2>Cancelling a booking</h2>
+    <h2>Permanent reservations</h2>
+</div>
+</body>
+</html>

@@ -9,8 +9,9 @@
     <link th:if="${heatmap}" th:href="@{/css/heatmap.css}" rel="stylesheet"/>
 </head>
 <body>
-<script th:if="${!heatmap}" type="text/javascript" th:src="@{/js/booking.js}"></script>
+<script type="text/javascript" th:src="@{/js/main.js}"></script>
 <script type="text/javascript" th:src="@{/js/toast.js}"></script>
+<script th:if="${!heatmap}" type="text/javascript" th:src="@{/js/booking.js}"></script>
 <script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmaplib.min.js}"></script>
 <script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmap.js}"></script>
 <div class="sticky-header">
@@ -21,6 +22,10 @@
             <div id="weekdays">
                 <!-- Days of the week will be added here -->
             </div>
+            <div id="infoIconWrapper">
+                <span class="info-icon margin-left-15" id="infoIcon" onclick="location.href = '/help'">?</span>
+                <div class="popup-info"><p> Click for help </p></div>
+            </div>
         </div>
         <div class="menu">
             <button th:if="${isAdmin}" onclick="location.href='/admin'">Admin</button>
@@ -28,7 +33,6 @@
         </div>
     </div>
 </div>
-
 
 <div class="image-container">
     <img id="backgroundImage" th:src="@{/img/floorplan.png}" alt="Floor plan">

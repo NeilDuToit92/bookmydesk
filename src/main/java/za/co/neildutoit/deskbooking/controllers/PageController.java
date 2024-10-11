@@ -29,6 +29,12 @@ public class PageController {
     return "home";
   }
 
+  @RequestMapping(path = {"/help"})
+  public String help(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    model.addAttribute("name", name);
+    return "help";
+  }
+
   @RequestMapping(path = {"/deskedit"})
   public String deskedit(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
     User user = userService.getCurrentUser();

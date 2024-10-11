@@ -280,3 +280,40 @@ select::after {
     right: 10px;
     pointer-events: none; /* Allow clicks to go through */
 }
+
+.info-icon {
+    font-family: Arial, sans-serif;
+    font-size: 24px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    padding: 5px;
+    display: inline-block;
+    text-align: center;
+    width: 30px;
+    height: 30px;
+    background-color: #f0f0f0;
+    color: #007BFF;
+    cursor: pointer;
+}
+
+.desk:hover .popup-info {
+    display: inline-block;
+}
+
+#infoIconWrapper {
+    position: relative;
+}
+
+#infoIcon:hover {
+    background-color: #007BFF;
+    color: white;
+}
+
+#infoIcon:hover + .popup-info {
+    margin-top: 20px;
+    display: block;
+}
+
+.margin-left-15 {
+    margin-left: 15px;
+}

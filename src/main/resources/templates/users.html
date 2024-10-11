@@ -7,8 +7,11 @@
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
     <link th:href="@{/css/users.css}" rel="stylesheet"/>
+    <link href="../../css/datatables.min.css" rel="stylesheet" type="text/css" th:href="@{/css/datatables.min.css}"/>
 </head>
 <body>
+<script type="text/javascript" th:src="@{/js/jquery.min.js/}"></script>
+<script type="text/javascript" th:src="@{/js/datatables.min.js/}"></script>
 <script type="text/javascript" th:src="@{/js/main.js}"></script>
 <script type="text/javascript" th:src="@{/js/users.js}"></script>
 <div class="sticky-header">
@@ -26,7 +29,21 @@
     <h2>This page is still a work in progress and some/all functionality may not work - see <a style="color: white" href="/todo">Todo</a> for more</h2>
 </div>
 
-<div id="contentDiv" class="contentDiv"></div>
+<div id="contentDiv" class="contentDiv">
+    <table id="usersTable" class="table stripe hover row-border order-column">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Enabled</th>
+            <th>Admin</th>
+            <th>Last Seen</th>
+            <th>Upcoming Bookings</th>
+            <th>Total Bookings</th>
+        </tr>
+        </thead>
+    </table>
+</div>
 
 </body>
 </html>

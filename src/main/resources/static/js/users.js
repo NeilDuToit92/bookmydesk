@@ -1,97 +1,67 @@
 document.addEventListener('DOMContentLoaded', () => {
-    loadUsers();
+    dataTable();
+    registerEvents();
 });
 
-function loadUsers() {
-    const contentDiv = document.getElementById('contentDiv');
-    contentDiv.innerHTML = '';
+let usersTable;
 
-    fetch('/api/user/all')
-        .then(response => response.json())
-        .then(users => {
-            const table = document.createElement('table');
-            table.style.width = '100%';
+function dataTable() {
+    let assessmentsTable = $('#usersTable');
+    let url = '/api/user/all';
+    usersTable = assessmentsTable.DataTable({
+        ajax:
+            {
+                url: url,
+                dataSrc: ''
+            },
+        columns: [
+            {"data": "displayName"},
+            {"data": "email"},
+            {"data": "enabled"},
+            {"data": "admin"},
+            {"data": "lastSeen"},
+            {"data": "upcomingBookingCount"},
+            {"data": "bookingCount"}
+        ],
+        columnDefs: [
+            {
+                targets: 2,
+                orderable: false,
+                render: function (data, type, row) {
+                    if (data) {
+                        return "<input type='checkbox' checked onChange='handleEnabledToggle(\"" + row.id + "\", false)'/>";
+                    } else {
+                        return "<input type='checkbox' onChange='handleEnabledToggle(\"" + row.id + "\", true)'/>";
+                    }
+                }
+            },
+            {
+                targets: 3,
+                orderable: false,
+                orderDataType: 'dom-checkbox',
+                render: function (data, type, row) {
+                    if (data) {
+                        return "<input type='checkbox' checked onChange='handleAdminToggle(\"" + row.id + "\", false)'/>";
+                    } else {
+                        return "<input type='checkbox' onChange='handleAdminToggle(\"" + row.id + "\", true)'/>";
+                    }
+                }
+            },
+            {
+                targets: 4,
+                render: function (data, type, row) {
+                    return formatDate(data);
+                }
+            },
+        ]
+    });
+}
 
-            // Create the thead element
-            const thead = document.createElement('thead');
-            thead.innerHTML = `
-                        <tr>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Enabled</th>
-                            <th>Admin</th>
-                            <th>Last Seen</th>
-                            <th>Upcoming Bookings</th>
-                            <th>Total Bookings</th>
-                        </tr>
-                    `;
-            table.appendChild(thead);
-
-            const tbody = document.createElement('tbody');
-            tbody.id = 'user-table-body';
-            table.appendChild(tbody);
-
-            contentDiv.appendChild(table);
-
-            users.forEach((user, index) => {
-                const userRow = document.createElement('tr');
-                //TODO: Row click to view/edit user
-                //userRow.onclick = () => editUser(user.id);
-
-                userRow.innerHTML = `
-                            <td>${user.displayName}</td>
-                            <td>${user.email}</td>
-                            <td>
-                                <label>
-                                     <input type="checkbox" ${user.enabled ? 'checked' : ''} onchange="handleEnabledToggle(${user.id}, this.checked)"/>
-                                </label>
-                            </td>
-                            <td>
-                                <label>
-                                     <input type="checkbox" ${user.admin ? 'checked' : ''} onchange="handleAdminToggle(${user.id}, this.checked)"/>
-                                </label>
-                            </td>
-                            <td>${formatDate(user.lastSeen)}</td>
-                            <td>${user.upcomingBookingCount} <button type="button" class="btn btn-link btn-small" onclick="toggleUpcomingBookings(${index}, this)">Show</button></td>
-                            <td>${user.bookingCount} <button type="button" class="btn btn-link btn-small" onclick="toggleAllBookings(${index}, this)">Show</button></td>
-                        `;
-
-                tbody.appendChild(userRow);
-
-                const upcomingBookingRow = document.createElement('tr');
-                upcomingBookingRow.id = `upcoming-bookings-${index}`;
-                upcomingBookingRow.classList.add('hidden-row-hide');
-
-                let upcomingBookingsHtml = '<td colspan="7"><h2>Upcoming Bookings</h2><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
-                user.upcomingBookings.forEach(booking => {
-                    upcomingBookingsHtml += `<tr>
-                                <td>${booking.permanent ? 'Permanent' : booking.date}</td>
-                                <td>${booking.displayId}</td>
-                            </tr>`;
-                });
-                upcomingBookingsHtml += '</tbody></table></td>';
-
-                upcomingBookingRow.innerHTML = upcomingBookingsHtml;
-                tbody.appendChild(upcomingBookingRow);
-
-                const allBookingRow = document.createElement('tr');
-                allBookingRow.id = `all-bookings-${index}`;
-                allBookingRow.classList.add('hidden-row-hide');
-
-                let allBookingsHtml = '<td colspan="7"><h2>All Bookings</h2><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
-                user.allBookings.forEach(booking => {
-                    allBookingsHtml += `<tr>
-                                <td>${booking.permanent ? 'Permanent' : booking.date}</td>
-                                <td>${booking.displayId}</td>
-                            </tr>`;
-                });
-                allBookingsHtml += '</tbody></table></td>';
-
-                allBookingRow.innerHTML = allBookingsHtml;
-                tbody.appendChild(allBookingRow);
-            });
-        })
-        .catch(error => console.error('Error fetching user data:', error));
+function registerEvents() {
+    usersTable.on('click', 'tbody tr', function () {
+        let data = usersTable.row(this).data();
+        console.log(data.id);
+    });
 }
 
 function loadDeskReservations() {
@@ -134,7 +104,7 @@ function handleEnabledToggle(userId, enabled) {
 }
 
 function handleUserUpdate(userId, payload) {
-    const url = `/api/user/${userId}`;
+    const url = '/api/user/' + userId;
 
     fetch(url, {
         method: 'PUT',

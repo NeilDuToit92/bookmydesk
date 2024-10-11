@@ -372,13 +372,6 @@ function addSingleEventListeners() {
     });
 }
 
-function formatDate(date) {
-    let year = date.getFullYear();
-    let month = (date.getMonth() + 1).toString().padStart(2, '0');
-    let day = date.getDate().toString().padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
 function changeDate(days) {
     const inputDate = document.getElementById("bookingDate");
     let currentDate = new Date(inputDate.value);

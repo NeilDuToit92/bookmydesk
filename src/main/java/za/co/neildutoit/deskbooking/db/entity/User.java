@@ -3,6 +3,7 @@ package za.co.neildutoit.deskbooking.db.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +24,7 @@ public class User {
     private boolean isAdmin = false;
     @Builder.Default
     private boolean enabled = true;
+    private LocalDateTime lastSeen;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

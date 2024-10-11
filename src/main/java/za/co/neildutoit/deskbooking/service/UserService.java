@@ -19,6 +19,7 @@ import za.co.neildutoit.deskbooking.exception.NotAdminUserException;
 import za.co.neildutoit.deskbooking.exception.UserNotFoundException;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -30,7 +31,7 @@ import java.util.stream.Collectors;
 public class UserService {
   private final UserRepository userRepository;
 
-  public void createLocalUser(OidcUser oidcUser) {
+  public void createOrUpdateLocalUser(OidcUser oidcUser) {
     String oidcId = (String) oidcUser.getAttributes().get("sub");
     Optional<User> userOpt = userRepository.findByOidcId(oidcId);
     log.info("createLocalUser - oidcId: {} - exists: {}", oidcId, userOpt.isPresent());
@@ -46,6 +47,7 @@ public class UserService {
     log.info("createLocalUser - oidcId: {}, email: {} - not exists", oidcId, email);
     user.setEmail(email);
     user.setDisplayName(displayName);
+    user.setLastSeen(LocalDateTime.now());
     userRepository.save(user);
   }
 
@@ -68,6 +70,7 @@ public class UserService {
                     .displayName(user.getDisplayName())
                     .isAdmin(user.isAdmin())
                     .bookingCount(user.getBookings().size())
+                    .lastSeen(user.getLastSeen())
                     .upcomingBookingCount((int) user.getBookings().stream()
                             .filter(booking -> booking.getDate() != null && !booking.getDate().isBefore(LocalDate.now()))
                             .count())

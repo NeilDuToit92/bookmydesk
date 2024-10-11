@@ -36,7 +36,7 @@ public class CustomOidcUserService extends OidcUserService {
         if (!config.systemConfig().getAllowedDomains().contains(domain.toLowerCase())) {
             throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token"), "Invalid email domain");
         }
-        userService.createLocalUser(oidcUser);
+         userService.createOrUpdateLocalUser(oidcUser);
         return new DefaultOidcUser(updatedAuthorities, oidcUser.getIdToken());
     }
 }

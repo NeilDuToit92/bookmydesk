@@ -3,6 +3,7 @@ package za.co.neildutoit.deskbooking.dto;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -17,4 +18,5 @@ public class UserDto {
   private List<BookingDto> upcomingBookings;
   private Integer bookingCount;
   private Integer upcomingBookingCount;
+  private LocalDateTime lastSeen;
 }

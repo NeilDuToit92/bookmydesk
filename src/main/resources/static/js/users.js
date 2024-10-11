@@ -20,9 +20,9 @@ function loadUsers() {
                             <th>Email</th>
                             <th>Enabled</th>
                             <th>Admin</th>
+                            <th>Last Seen</th>
                             <th>Upcoming Bookings</th>
                             <th>Total Bookings</th>
-                            <th></th>
                         </tr>
                     `;
             table.appendChild(thead);
@@ -35,6 +35,8 @@ function loadUsers() {
 
             users.forEach((user, index) => {
                 const userRow = document.createElement('tr');
+                //TODO: Row click to view/edit user
+                //userRow.onclick = () => editUser(user.id);
 
                 userRow.innerHTML = `
                             <td>${user.displayName}</td>
@@ -49,11 +51,9 @@ function loadUsers() {
                                      <input type="checkbox" ${user.admin ? 'checked' : ''} onchange="handleAdminToggle(${user.id}, this.checked)"/>
                                 </label>
                             </td>
+                            <td>${formatDate(user.lastSeen)}</td>
                             <td>${user.upcomingBookingCount} <button type="button" class="btn btn-link btn-small" onclick="toggleUpcomingBookings(${index}, this)">Show</button></td>
                             <td>${user.bookingCount} <button type="button" class="btn btn-link btn-small" onclick="toggleAllBookings(${index}, this)">Show</button></td>
-                            <td>
-                                 <button type="button" class="btn btn-link btn-small" onclick="editUser(${user.id})">Edit</button>
-                            </td>
                         `;
 
                 tbody.appendChild(userRow);

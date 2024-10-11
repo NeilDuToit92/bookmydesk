@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 const maxDays = 29;
+let currentUserHasBooking = false;
 
 function blockHistoricAndFutureDates() {
     const input = document.getElementById('bookingDate');
@@ -59,9 +60,9 @@ function fetchAndDisplayDesks() {
 
     // Create a new AbortController
     currentFetchController = new AbortController();
-    const { signal } = currentFetchController;
+    const {signal} = currentFetchController;
 
-    fetch('/api/desk?date=' + bookingDate, { signal })
+    fetch('/api/desk?date=' + bookingDate, {signal})
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -69,6 +70,13 @@ function fetchAndDisplayDesks() {
             return response.json();
         })
         .then(deskData => {
+            currentUserHasBooking = false;
+            deskData.forEach(desk => {
+                if (desk.bookedByCurrentUser || desk.bookedByCurrentUser === "true") {
+                    currentUserHasBooking = true;
+                }
+            });
+
             deskData.forEach(desk => {
                 const deskDiv = document.createElement('div');
                 deskDiv.classList.add('desk-div');
@@ -81,6 +89,7 @@ function fetchAndDisplayDesks() {
                 deskCircle.textContent = desk.displayId;
                 deskCircle.setAttribute('data-id', desk.databaseId);
                 deskCircle.setAttribute('data-status', desk.status);
+                deskCircle.setAttribute('data-current-user', desk.bookedByCurrentUser);
                 switch (desk.status) {
                     case "AVAILABLE":
                         deskCircle.classList.add("desk-available");
@@ -93,23 +102,41 @@ function fetchAndDisplayDesks() {
                         break;
                 }
 
-                if (desk.bookedByCurrentUser) {
-                    deskCircle.classList.add("desk-currentuser");
-                }
-
                 const popupInfo = document.createElement('div');
                 popupInfo.classList.add('popup-info');
                 const bookedByParagraph = document.createElement('p');
-                if (desk.bookedBy) {
-                    bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
-                } else {
-                    bookedByParagraph.textContent = desk.displayId + ' - ' + "Click to book";
+
+                let clickable = false;
+                let hasPopup = false;
+
+                if (desk.bookedByCurrentUser) {
+                    deskCircle.classList.add("desk-currentuser");
+                    clickable = true;
                 }
 
-                popupInfo.appendChild(bookedByParagraph);
+                if (desk.bookedBy) {
+                    bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
+                    hasPopup = true;
+                } else if (!currentUserHasBooking) {
+                    bookedByParagraph.textContent = desk.displayId + ' - ' + "Click to book";
+                    clickable = true;
+                    hasPopup = true;
+                }
+
+                if (clickable) {
+                    deskDiv.classList.add('pointer-hover');
+                    deskCircle.classList.add('pointer-hover');
+                } else {
+                    deskDiv.classList.add('pointer-not-allowed');
+                    deskCircle.classList.add('pointer-not-allowed');
+                }
+
+                if (hasPopup) {
+                    popupInfo.appendChild(bookedByParagraph);
+                    deskDiv.appendChild(popupInfo);
+                }
 
                 deskDiv.appendChild(deskCircle);
-                deskDiv.appendChild(popupInfo);
                 imageContainer.appendChild(deskDiv);
             });
 
@@ -134,30 +161,46 @@ function fetchBookedDates() {
 }
 
 function showPopup(element, overlay, bookPopup, cancelPopup) {
-    let deskId = element.textContent;
-    let deskDbId = element.getAttribute('data-id');
-    const deskIdSpan = document.getElementById('deskId');
-    const deskDbIdInput = document.getElementById('deskDbId');
-    document.getElementById('dateToBook').textContent = document.getElementById('bookingDate').value;
-
-    overlay.style.display = 'flex';
-    deskIdSpan.textContent = deskId;
-    deskDbIdInput.value = deskDbId;
     let deskStatus = element.getAttribute('data-status');
-    switch (deskStatus) {
-        case "AVAILABLE":
-            bookPopup.style.display = 'block';
-            break;
-        case "BOOKED":
-            cancelPopup.style.display = 'block';
-            break;
-        case "RESERVED":
-            //Do nothing
-            break;
-    }
-    return deskStatus;
-}
+    if (deskStatus === "AVAILABLE" || deskStatus === "BOOKED") {
+        if (deskStatus === "AVAILABLE" && currentUserHasBooking) {
+            return;
+        }
+        if (deskStatus === "BOOKED") {
+            let bookedByCurrentUser = element.getAttribute('data-current-user');
+            if (!bookedByCurrentUser || bookedByCurrentUser === "false" || bookedByCurrentUser.trim() === "") {
+                return;
+            }
+        }
 
+        let deskId = element.textContent;
+        let deskDbId = element.getAttribute('data-id');
+        const deskIdSpan = document.getElementById('deskId');
+        const deskId2Span = document.getElementById('deskId2');
+        const deskDbIdInput = document.getElementById('deskDbId');
+        const bookingDate = document.getElementById('bookingDate').value;
+        document.getElementById('dateToBook').textContent = bookingDate;
+        document.getElementById('dateToBook2').textContent = bookingDate;
+
+        overlay.style.display = 'flex';
+        deskIdSpan.textContent = deskId;
+        deskId2Span.textContent = deskId;
+        deskDbIdInput.value = deskDbId;
+
+        switch (deskStatus) {
+            case "AVAILABLE":
+                bookPopup.style.display = 'block';
+                break;
+            case "BOOKED":
+                cancelPopup.style.display = 'block';
+                break;
+            case "RESERVED":
+                //Do nothing
+                break;
+        }
+        return deskStatus;
+    }
+}
 
 function addRecurringEventListeners() {
     const desks = document.querySelectorAll('.desk');
@@ -169,48 +212,53 @@ function addRecurringEventListeners() {
         desk.addEventListener('click', function () {
             showPopup(this, overlay, bookPopup, cancelPopup);
         });
-        desk.closest('.desk-div').querySelector('.popup-info').addEventListener('click', function () {
-            let deskDiv = this.parentElement;
-            let desk = deskDiv.querySelector('.desk');
-            showPopup(desk, overlay, bookPopup, cancelPopup);
-        });
+        let deskSelector = desk.closest('.desk-div').querySelector('.popup-info');
+        if (deskSelector) {
+            deskSelector.addEventListener('click', function () {
+                let deskDiv = this.parentElement;
+                let desk = deskDiv.querySelector('.desk');
+                showPopup(desk, overlay, bookPopup, cancelPopup);
+            });
+        }
     });
 
     document.querySelectorAll('.desk-div').forEach(function (desk) {
         const popup = desk.querySelector('.popup-info');
-        desk.addEventListener('mouseenter', function () {
-            let viewportRight = window.scrollX + window.innerWidth;
-            let viewportBottom = window.scrollY + window.innerHeight;
+        if (popup) {
+            desk.addEventListener('mouseenter', function () {
+                let viewportRight = window.scrollX + window.innerWidth;
+                let viewportBottom = window.scrollY + window.innerHeight;
 
-            popup.style.display = 'inline-block';
-            let popupRect = popup.getBoundingClientRect();
-            let popupLeft = popupRect.left + window.scrollX;
-            let popupWidth = popupRect.width;
-            let popupRight = popupLeft + popupWidth;
+                popup.style.display = 'inline-block';
+                let popupRect = popup.getBoundingClientRect();
+                let popupLeft = popupRect.left + window.scrollX;
+                let popupWidth = popupRect.width;
+                let popupRight = popupLeft + popupWidth;
 
-            let popupTop = popupRect.top + window.scrollY;
-            let popupHeight = popupRect.height;
-            let popupBottom = popupTop + popupHeight;
+                let popupTop = popupRect.top + window.scrollY;
+                let popupHeight = popupRect.height;
+                let popupBottom = popupTop + popupHeight;
 
-            //TODO: Does not work when zoomed in
-            if (popupRight > viewportRight) {
-                //If falling off the right of the viewport, move it to just inside the viewport
-                let overhang = popupRight - viewportRight;
-                popup.style.left = (-1 * overhang) + 'px';
-            }
+                //TODO: Does not work when zoomed in
+                if (popupRight > viewportRight) {
+                    //If falling off the right of the viewport, move it to just inside the viewport
+                    let overhang = popupRight - viewportRight;
+                    popup.style.left = (-1 * overhang) + 'px';
+                }
 
-            if (popupBottom > viewportBottom) {
-                //If falling off the bottom of the viewport, move it to just inside the viewport
-                let overhang = popupBottom - viewportBottom;
-                popup.style.top = (-1 * overhang) + 'px';
-            }
+                if (popupBottom > viewportBottom) {
+                    //If falling off the bottom of the viewport, move it to just inside the viewport
+                    let overhang = popupBottom - viewportBottom;
+                    popup.style.top = (-1 * overhang) + 'px';
+                }
 
-        });
-        desk.addEventListener('mouseleave', function () {
-            popup.style.display = 'none';
-            popup.style.left = '';
-            popup.style.top = '';
-        });
+            });
+            desk.addEventListener('mouseleave', function () {
+                popup.style.display = 'none';
+                popup.style.left = '';
+                popup.style.top = '';
+            });
+        }
     });
 }
 
@@ -287,7 +335,7 @@ function addSingleEventListeners() {
             })
             .catch(error => {
                 overlay.style.display = 'none';
-                bookPopup.style.display = 'none';
+                cancelPopup.style.display = 'none';
                 fetchAndDisplayDesks();
                 showToast(error, "error")
             });

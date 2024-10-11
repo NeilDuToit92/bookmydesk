@@ -33,6 +33,9 @@ public class SecurityConfig {
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutSuccessUrl("/home"))
+        //TODO
+//                .exceptionHandling()
+//                  .accessDeniedPage("/forbidden");
 
         ;
 

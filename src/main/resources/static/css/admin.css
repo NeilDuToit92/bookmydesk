@@ -1,0 +1,41 @@
+.hidden-row-hide {
+    display: none;
+}
+
+.hidden-row-show {
+    display: table-row;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+th {
+    text-align: left;
+}
+
+table, td, th {
+    border: 1px solid;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+.tab-buttons {
+    display: flex;
+    margin-bottom: 20px;
+    margin-top: 25px;
+}
+.tab-buttons button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    border: none;
+    cursor: pointer;
+    background-color: #f1f1f1;
+    font-size: 16px;
+}
+.tab-buttons button.active {
+    background-color: #4CAF50;
+    color: white;
+}

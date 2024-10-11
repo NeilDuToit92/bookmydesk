@@ -1,10 +1,9 @@
 package za.co.neildutoit.deskbooking.controllers;
 
-import za.co.neildutoit.deskbooking.db.entity.Desk;
 import za.co.neildutoit.deskbooking.db.entity.User;
 import za.co.neildutoit.deskbooking.dto.BookingDto;
-import za.co.neildutoit.deskbooking.service.BookingService;
-import za.co.neildutoit.deskbooking.service.DeskService;
+import za.co.neildutoit.deskbooking.dto.CoordinateDto;
+import za.co.neildutoit.deskbooking.service.DeskBookingService;
 import za.co.neildutoit.deskbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,17 +18,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookingController {
 
-  private final BookingService bookingService;
+  private final DeskBookingService deskBookingService;
   private final UserService userService;
-  private final DeskService deskService;
 
   //Book seat
   @PostMapping("/{deskId}")
   public String bookDesk(@PathVariable long deskId, @RequestParam LocalDate date) {
     log.info("bookDesk - deskId: {}, date: {}", deskId, date);
-    User user = userService.getCurrentUser();
-    Desk desk = deskService.get(deskId);
-    bookingService.bookDesk(date, user, desk);
+    deskBookingService.bookDeskForCurrentUser(date, deskId);
     return "OK";
   }
 
@@ -37,23 +33,32 @@ public class BookingController {
   @DeleteMapping("/{deskId}")
   public String cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
     log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
-    User user = userService.getCurrentUser();
-    Desk desk = deskService.get(deskId);
-    bookingService.cancelBooking(date, user, desk);
+    deskBookingService.cancelBooking(date, deskId);
     return "OK";
   }
 
-    //Get all bookings for person
-    @RequestMapping("/all")
-    public List<BookingDto> getBookingsForUser() {
-        User user = userService.getCurrentUser();
-        return bookingService.getAllByUser(user.getId());
-    }
+  //Get all bookings for person
+  @RequestMapping("/all")
+  public List<BookingDto> getBookingsForUser() {
+    User user = userService.getCurrentUser();
+    return deskBookingService.getAllByUser(user.getId());
+  }
+
+  @RequestMapping("/permanent/all")
+  public List<BookingDto> getAllPermanentReservations() {
+    return deskBookingService.getAllPermanentBookings();
+  }
 
   @RequestMapping("/dates")
   public List<LocalDate> getBookedDatesForUser(@RequestParam("days") Integer days) {
     User user = userService.getCurrentUser();
-    return bookingService.getBookedDatesByUser(user.getId(), days);
+    return deskBookingService.getBookedDatesByUser(user.getId(), days);
+  }
+
+  @RequestMapping("/heatmap")
+  public List<CoordinateDto> getHeatMapData() {
+    //TODO: Date range
+    return deskBookingService.getHeatMapData();
   }
 
   //Booking report - All persons for date range

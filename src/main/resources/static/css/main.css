@@ -23,24 +23,30 @@ body {
     text-align: center;
 }
 
-.desk-div:hover {
+.pointer-hover:hover {
     cursor: pointer;
 }
 
-.desk:hover {
-    cursor: pointer;
+.pointer-not-allowed:hover {
+    cursor: not-allowed;
 }
-
 .image-container {
     width: 1920px;
     position: relative;
 }
 
 .image-container img {
-    width: 1920px;
+    /*width: 1920px;*/
     height: auto;
-    display: block;
-    position: relative; /* Ensure the image is positioned relative to its container */
+    /*display: block;*/
+    position: relative;
+
+    top: 0;
+    left: 0;
+    width: 100%;
+    /*height: 100%;*/
+    z-index: -1;
+    /*position: absolute;*/
 }
 
 .desk {
@@ -98,91 +104,6 @@ body {
     margin-right: 10px;
 }
 
-.modal-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
-    z-index: 1000; /* Ensure it's on top of other elements */
-    justify-content: center;
-    align-items: center;
-}
-
-.loading-text {
-    color: #ffffff; /* White text */
-    font-size: 24px;
-}
-
-table {
-    border-collapse: collapse;
-    width: 100%;
-    margin: 20px 0;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-    overflow: hidden;
-}
-
-th, td {
-    border: 1px solid #01468e; /* Navy Blue */
-    text-align: left;
-    padding: 12px;
-    vertical-align: top;
-}
-
-th {
-    background-color: #01468e; /* Navy Blue */
-    color: white;
-}
-
-tr:hover {
-    background-color: #deeff5; /* Light Blue */
-}
-
-.error-message {
-    color: #ff0000; /* Red color for error messages */
-    font-weight: bold;
-}
-
-.collapsible-content {
-    display: none;
-}
-
-ul {
-    margin: 0;
-    padding-left: 17px;
-}
-
-
-.collapsible-button {
-    cursor: pointer;
-    background-color: #007bff;
-    color: #ffffff;
-    padding: 5px;
-    border: none;
-    border-radius: 3px;
-    margin-bottom: 10px;
-}
-
-.collapsible-button:hover {
-    cursor: pointer;
-    background-color: #1e66b0;
-}
-
-.refresh-icon {
-    color: #007bff;
-}
-
-.refresh-icon:hover {
-    cursor: pointer;
-    color: #1e66b0;
-}
-
-input[type="checkbox"] {
-    margin-right: 5px;
-}
-
 button {
     background-color: #007bff;
     border: none;
@@ -203,80 +124,6 @@ button:hover {
 
 }
 
-.version-entry {
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-}
-
-.version-entry span {
-    margin-right: 5px;
-}
-
-.version-entry select {
-    margin-right: 10px;
-    padding: 5px;
-}
-
-.nameLabel {
-    width: 250px;
-}
-
-.prodVersionLabel {
-    width: 150px;
-    text-align: right;
-}
-
-.input-container {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.input-container span {
-    margin-right: 5px;
-}
-
-.input-container input {
-    padding: 5px;
-    width: 75px;
-    box-sizing: border-box;
-}
-
-.ticket-row {
-    cursor: pointer;
-}
-
-.header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.header-container h1,
-.header-container button {
-    margin-right: 10px;
-}
-
-.service-checkbox-label {
-    width: 215px;
-    display: inline-block;
-}
-
-.service-checkbox-label-prod-version,
-.service-checkbox-label-latest-version {
-    width: 120px;
-    display: inline-block;
-}
-
-hr {
-    margin: 3px;
-}
-
-#selectServicesInnerDiv {
-    width: fit-content;
-}
-
 .popup-info {
     display: none;
     position: absolute;
@@ -286,8 +133,8 @@ hr {
     border-radius: 5px;
     z-index: 1;
     white-space: nowrap;
-    top: 11px;
-    left: 11px;
+    top: 20px;
+    left: 15px;
 }
 
 .desk:hover .popup-info {
@@ -308,22 +155,6 @@ hr {
     text-align: center;
     border: 1px solid #ccc;
     cursor: pointer;
-}
-
-.weekend-block {
-    display: inline-block;
-    border: 1px solid #ccc;
-    width: 35px;
-    background-color: #bfbfbf;
-    text-align: center;
-}
-
-.historic-block {
-    display: inline-block;
-    border: 1px solid #ccc;
-    width: 35px;
-    background-color: #bfbfbf;
-    text-align: center;
 }
 
 .day-block:hover {
@@ -396,12 +227,6 @@ hr {
     transition: transform 0.5s ease, opacity 0.5s ease;
 }
 
-menu {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
 .menu button {
     background-color: #007bff;
     color: #fff;
@@ -419,28 +244,10 @@ menu {
     background-color: #555;
 }
 
-.dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: #333;
-    display: none;
-    flex-direction: column;
-    width: 150px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+#cancelBooking {
+    background-color: red;
 }
 
-.dropdown a {
-    color: #fff;
-    padding: 10px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown a:hover {
-    background-color: #555;
-}
-
-.menu:hover .dropdown {
-    display: flex;
+#confirmBooking {
+    background-color: green;
 }

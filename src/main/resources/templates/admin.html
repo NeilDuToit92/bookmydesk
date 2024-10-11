@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Booking</title>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/css/admin.css}" rel="stylesheet"/>
+</head>
+<body>
+<script type="text/javascript" th:src="@{/js/admin.js}"></script>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name} + ' (ADMIN)'"></h2>
+        <div class="menu">
+            <button onclick="location.href='/home'">Desk Booking</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="tab-buttons">
+    <button id="tabUsers" onclick="loadUsers()">Users</button>
+    <button id="tabReservations" onclick="loadDeskReservations()">Reservations</button>
+    <button id="desks" onclick="loadDesks()">Desks</button>
+</div>
+
+<div id="contentDiv"></div>
+
+</body>
+</html>

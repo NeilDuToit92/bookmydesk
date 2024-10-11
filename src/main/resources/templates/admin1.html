@@ -6,15 +6,13 @@
     <title>Desk Booking</title>
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
-    <link th:if="${heatmap}" th:href="@{/css/heatmap.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main-admin.css}" rel="stylesheet"/>
 </head>
 <body>
-<script th:if="${!heatmap}" type="text/javascript" th:src="@{/js/booking.js}"></script>
-<script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmaplib.min.js}"></script>
-<script th:if="${heatmap}" type="text/javascript" th:src="@{/js/heatmap.js}"></script>
+<script type="text/javascript" th:src="@{/js/booking.js}"></script>
 <div class="sticky-header">
     <div class="header-content">
-        <h2 th:text="'Welcome ' + ${name}"></h2>
+        <h2 th:text="'Welcome ' + ${name} + ' (ADMIN)'"></h2>
         <div class="header-content">
             <input id="bookingDate" type="hidden">
             <div id="weekdays">
@@ -22,7 +20,8 @@
             </div>
         </div>
         <div class="menu">
-            <button th:if="${isAdmin}" onclick="location.href='/admin'">Admin</button>
+            <button onclick="location.href='/home'">User Mode</button>
+            <button onclick="location.href='/settings'">Settings</button>
             <button onclick="location.href='/logout'">Logout</button>
         </div>
     </div>
@@ -30,8 +29,7 @@
 
 
 <div class="image-container">
-    <img id="backgroundImage" th:src="@{/img/floorplan.png}" alt="Floor plan">
-    <div th:if="${heatmap}" id="heatmap"></div>
+    <img th:src="@{/img/floorplan.png}" alt="Floor plan">
 </div>
 
 <div class="overlay" id="overlay">
@@ -44,11 +42,10 @@
 
     <div class="popup" id="cancelPopup">
         <h3>Cancel Booking for Desk <span id="deskId2"></span> for <span id="dateToBook2"></span></h3>
-        <button type="button" id="cancelBooking">Cancel Booking</button>
+        <button type="button" id="cancelBooking">Confirm</button>
         <button type="button" id="closePopupCancel">Close</button>
     </div>
 </div>
-
 <div id="toast" class="toast"></div>
 </body>
 </html>

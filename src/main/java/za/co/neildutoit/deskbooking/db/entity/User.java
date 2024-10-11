@@ -1,13 +1,13 @@
 package za.co.neildutoit.deskbooking.db.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @Entity
@@ -22,8 +22,10 @@ public class User {
     private String oidcId;
     private String email;
     private String displayName;
+    @Builder.Default
+    private boolean isAdmin = false;
 
-//    @ManyToOne
-//    @JoinColumn(name = "booking_id")
-//    private Booking booking;
+    @Builder.Default
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Booking> bookings = new ArrayList<>();
 }

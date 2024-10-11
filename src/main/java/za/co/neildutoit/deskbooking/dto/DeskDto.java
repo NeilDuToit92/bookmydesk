@@ -1,23 +1,20 @@
 package za.co.neildutoit.deskbooking.dto;
 
-import za.co.neildutoit.deskbooking.enums.DeskStatus;
 import lombok.Builder;
 import lombok.Data;
+import za.co.neildutoit.deskbooking.enums.DeskStatus;
 
 import java.time.LocalDate;
 
 @Data
 @Builder
 public class DeskDto {
-    private long databaseId;
-    private long displayId;
-    private long x;
-    private long y;
-    @Builder.Default
-    private DeskStatus status = DeskStatus.AVAILABLE;
-    private String bookedBy;
-    @Builder.Default
-    private LocalDate date = LocalDate.now();
-    @Builder.Default
-    private boolean bookedByCurrentUser = false;
+  private long databaseId;
+  private long displayId;
+  private long x;
+  private long y;
+  private DeskStatus status;
+  private String bookedBy;
+  private LocalDate date;
+  private Boolean bookedByCurrentUser;
 }

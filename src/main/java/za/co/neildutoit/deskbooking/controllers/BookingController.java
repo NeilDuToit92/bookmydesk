@@ -30,6 +30,14 @@ public class BookingController {
     return new MessageDto("OK");
   }
 
+  @PostMapping("/{deskId}/reserve")
+  public MessageDto reserveDesk(@PathVariable long deskId, @RequestParam long userId) {
+    log.info("reserveDesk - deskId: {}, userId: {}", deskId, userId);
+    userService.checkAdminUser();
+    deskBookingService.reserveDeskForUser(deskId, userId);
+    return new MessageDto("OK");
+  }
+
   //Cancel Booking - current user
   @DeleteMapping("/{deskId}")
   public MessageDto cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {

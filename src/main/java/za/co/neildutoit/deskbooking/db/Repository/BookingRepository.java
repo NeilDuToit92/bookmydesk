@@ -18,6 +18,9 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.date = ?2")
     Optional<Booking> findAllByDeskIdAndDate(long deskId, LocalDate date);
 
+    @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.date >= ?2")
+    List<Booking> findAllByDeskIdAndDateOnOrAfter(long deskId, LocalDate date);
+
     @Query("SELECT b FROM Booking b WHERE b.desk.id = ?1 and b.permanent = true")
     Optional<Booking> findAllByDeskIdAndAndPermanentTrue(long deskId);
 

@@ -31,9 +31,24 @@ public class PageController {
 
   @RequestMapping(path = {"/deskedit"})
   public String deskedit(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    User user = userService.getCurrentUser();
+    if (user == null || !user.isAdmin()) {
+      return "redirect:/home";
+    }
     model.addAttribute("name", name);
     return "deskedit";
   }
+
+  @RequestMapping(path = {"/reservations"})
+  public String reservations(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    User user = userService.getCurrentUser();
+    if (user == null || !user.isAdmin()) {
+      return "redirect:/home";
+    }
+    model.addAttribute("name", name);
+    return "reservations";
+  }
+
 
   @RequestMapping(path = {"/admin"})
   public String admin(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {

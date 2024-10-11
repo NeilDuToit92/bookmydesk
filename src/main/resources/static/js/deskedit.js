@@ -2,27 +2,10 @@ document.addEventListener('DOMContentLoaded', function () {
     fetchAndDisplayDesks();
 });
 
-let currentFetchController = null;
-
 function fetchAndDisplayDesks() {
-    const bookingDate = new Date().toISOString().split('T')[0];
-
     const imageContainer = document.querySelector('.image-container');
 
-    // Remove existing desk-div elements
-    const existingDesks = document.querySelectorAll('.desk-div');
-    existingDesks.forEach(desk => desk.remove());
-
-    // Abort the previous fetch if it exists
-    if (currentFetchController) {
-        currentFetchController.abort();
-    }
-
-    // Create a new AbortController
-    currentFetchController = new AbortController();
-    const {signal} = currentFetchController;
-
-    fetch('/api/desk?date=' + bookingDate, {signal})
+    fetch('/api/desk/all' )
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -95,7 +78,6 @@ function fetchAndDisplayDesks() {
                 const onMouseUp = () => {
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
-                    console.log(`New position - x: ${deskDiv.style.left}, y: ${deskDiv.style.top}`);
                 };
 
                 deskDiv.appendChild(deskCircle);
@@ -114,7 +96,6 @@ function fetchAndDisplayDesks() {
 }
 
 function deskMoved(deskCircle) {
-    console.log(deskCircle.classList);
     if (deskCircle.classList.contains('desk-unmoved')) {
         deskCircle.classList.remove('desk-unmoved');
         deskCircle.classList.add('desk-moved');

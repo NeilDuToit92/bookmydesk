@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Reservations</title>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/css/heatmap.css}" rel="stylesheet"/>
+</head>
+<body>
+<script type="text/javascript" th:src="@{/js/reservations.js}"></script>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name}"></h2>
+        <h2>Permanent desk reservations</h2>
+        <div class="menu">
+            <button th:if="${isAdmin}" onclick="location.href='/admin'">Admin</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="image-container">
+    <img id="backgroundImage" th:src="@{/img/floorplan.png}" alt="Floor plan">
+</div>
+
+<div class="overlay" id="overlay">
+    <input type="hidden" id="deskDbId">
+    <div class="popup" id="bookPopup">
+        <h3>Permanently Reserve Desk <span id="deskId"></span> for user dropdown</h3>
+        <button type="button" id="confirmBooking">Confirm</button>
+        <button type="button" id="closePopupBooking">Close</button>
+    </div>
+
+    <div class="popup" id="cancelPopup">
+        <h3>Cancel Permanent Reservation for Desk <span id="deskId2"></span> for user</span></h3>
+        <button type="button" id="cancelBooking">Cancel Reservation</button>
+        <button type="button" id="closePopupCancel">Close</button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+</body>
+</html>

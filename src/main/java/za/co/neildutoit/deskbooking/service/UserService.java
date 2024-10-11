@@ -136,4 +136,8 @@ public class UserService {
       //TODO: Throw exception
     }
   }
+
+  public User getUser(long userId) {
+    return userRepository.findById(userId).orElse(null);
+  }
 }

@@ -19,10 +19,7 @@ import za.co.neildutoit.deskbooking.exception.DeskNotFoundException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -121,16 +118,36 @@ public class DeskBookingService {
   }
 
   public List<DeskDto> getAllDesks() {
-    //TODO: Permanently booked?
-    return deskRepository.findAll().stream()
-            .sorted(Comparator.comparing(Desk::getId))
-            .map(desk -> DeskDto.builder()
-                    .databaseId(desk.getId())
-                    .displayId(desk.getDisplayName())
-                    .x(desk.getX())
-                    .y(desk.getY())
-                    .build())
-            .collect(Collectors.toList());
+    ArrayList<DeskDto> desks = new ArrayList<>();
+    List<Booking> reservedDesks = getPermanentBookings();
+
+    for (Desk desk : deskRepository.findAll()) {
+
+      Booking bookingForDesk = null;
+      for (Booking booking : reservedDesks) {
+        if (booking.getDesk().equals(desk)) {
+          bookingForDesk = booking;
+        }
+      }
+
+      DeskDto dto = DeskDto.builder()
+              .databaseId(desk.getId())
+              .displayId(desk.getDisplayName())
+              .x(desk.getX())
+              .y(desk.getY())
+              .status(DeskStatus.AVAILABLE)
+              .build();
+
+      if (bookingForDesk != null) {
+        dto.setStatus(DeskStatus.RESERVED);
+        dto.setBookedBy(bookingForDesk.getUser().getDisplayName());
+      }
+
+      desks.add(dto);
+    }
+
+    desks.sort(Comparator.comparingLong(DeskDto::getDatabaseId));
+    return desks;
   }
 
   //Get all bookings for date
@@ -243,6 +260,35 @@ public class DeskBookingService {
     }
 
     return bookedDates;
+  }
+
+  @Transactional
+  public void reserveDeskForUser(long deskId, long userId) {
+    //TODO: There should be a step that show in the FE which future bookings will be cancelled
+    log.info("reserveDeskForUser - deskId: {}, userId: {}", deskId, userId);
+    Desk desk = getDesk(deskId);
+
+    //Check if desk is already permanently booked
+    Optional<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndAndPermanentTrue(desk.getId());
+    if (permanentBookingForDesk.isPresent()) {
+      throw new BookingException("The desk is reserved");
+    }
+
+    User user = userService.getUser(userId);
+    if (user == null) {
+      throw new BookingException("No user found for ID " + userId);
+    }
+
+    List<Booking> existingBookingsForDesk = bookingRepository.findAllByDeskIdAndDateOnOrAfter(desk.getId(), LocalDate.now());
+//    bookingRepository.deleteAll(existingBookingsForDesk);
+
+//    bookingRepository.save(Booking.builder()
+//            .date(LocalDate.now())
+//            .user(user)
+//            .desk(desk)
+//              .permanent(true)
+//            .build()
+//    );
   }
 
   @Transactional(readOnly = true)

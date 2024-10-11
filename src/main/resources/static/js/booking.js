@@ -365,28 +365,6 @@ function addSingleEventListeners() {
     });
 }
 
-function limitToWeekdays() {
-    const input = document.getElementById('bookingDate');
-    const selectedDate = new Date(input.value);
-
-    // Get the day of the week (0 for Sunday, 1 for Monday, ..., 6 for Saturday)
-    const dayOfWeek = selectedDate.getDay();
-
-    // If selected date is Saturday or Sunday, adjust it to next Monday
-    if (dayOfWeek === 0) { // Sunday
-        selectedDate.setDate(selectedDate.getDate() + 1);
-    } else if (dayOfWeek === 6) { // Saturday
-        selectedDate.setDate(selectedDate.getDate() + 2);
-    }
-
-    // Set the minimum and maximum date to the nearest weekdays
-    input.min = formatDate(selectedDate);
-    input.max = input.min; // We want only one selectable date
-
-    // Set the input value to the nearest weekday
-    input.value = formatDate(selectedDate);
-}
-
 function formatDate(date) {
     let year = date.getFullYear();
     let month = (date.getMonth() + 1).toString().padStart(2, '0');

@@ -4,6 +4,11 @@
     margin: 5px;
 }
 
+.xy-number-input::-webkit-inner-spin-button,
+.xy-number-input::-webkit-outer-spin-button {
+    opacity: 1;
+}
+
 .desk-div:hover {
     cursor: pointer;
 }
@@ -18,4 +23,10 @@
 
 .desk-moved {
     background-color: rgb(222, 159, 0);
+}
+
+body {
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

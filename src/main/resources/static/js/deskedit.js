@@ -52,15 +52,26 @@ function fetchAndDisplayDesks() {
                 popupInfo.appendChild(xInput);
                 popupInfo.appendChild(document.createTextNode('Y: '));
                 popupInfo.appendChild(yInput);
+
+                const resetButton = document.createElement('button');
+                resetButton.textContent = 'Reset Position';
+                const originalTop = parseInt(deskDiv.style.top);
+                const originalLeft = parseInt(deskDiv.style.left);
+                resetButton.onclick = function() {
+                    resetDeskPosition(deskDiv, deskCircle, originalLeft, originalTop);
+                };
+                popupInfo.appendChild(resetButton);
                 deskDiv.appendChild(popupInfo);
 
                 // Variables to hold the initial position
                 let offsetX, offsetY;
+                let originalZIndex = deskDiv.style.zIndex;
 
                 // Mouse down event to start dragging
                 deskDiv.addEventListener('mousedown', (e) => {
                     offsetX = e.clientX - parseInt(deskDiv.style.left);
                     offsetY = e.clientY - parseInt(deskDiv.style.top);
+                    deskDiv.style.zIndex = 1000;
                     document.addEventListener('mousemove', onMouseMove);
                     document.addEventListener('mouseup', onMouseUp);
                 });
@@ -76,9 +87,43 @@ function fetchAndDisplayDesks() {
 
                 // Mouse up event to end dragging
                 const onMouseUp = () => {
+                    deskDiv.style.zIndex = originalZIndex;
                     document.removeEventListener('mousemove', onMouseMove);
                     document.removeEventListener('mouseup', onMouseUp);
                 };
+
+                deskDiv.addEventListener('mouseenter', function () {
+                    let viewportRight = window.scrollX + window.innerWidth;
+                    let viewportBottom = window.scrollY + window.innerHeight;
+
+                    popupInfo.style.display = 'inline-block';
+                    let popupRect = popupInfo.getBoundingClientRect();
+                    let popupLeft = popupRect.left + window.scrollX;
+                    let popupWidth = popupRect.width;
+                    let popupRight = popupLeft + popupWidth;
+
+                    let popupTop = popupRect.top + window.scrollY;
+                    let popupHeight = popupRect.height;
+                    let popupBottom = popupTop + popupHeight;
+
+                    //TODO: Does not work when zoomed in
+                    if (popupRight > viewportRight) {
+                        //If falling off the right of the viewport, move it to just inside the viewport
+                        let overhang = popupRight - viewportRight;
+                        popupInfo.style.left = (-1 * overhang) + 'px';
+                    }
+
+                    if (popupBottom > viewportBottom) {
+                        //If falling off the bottom of the viewport, move it to just inside the viewport
+                        let overhang = popupBottom - viewportBottom;
+                        popupInfo.style.top = (-1 * overhang) + 'px';
+                    }
+                });
+                deskDiv.addEventListener('mouseleave', function () {
+                    popupInfo.style.display = 'none';
+                    popupInfo.style.left = '';
+                    popupInfo.style.top = '';
+                });
 
                 deskDiv.appendChild(deskCircle);
                 imageContainer.appendChild(deskDiv);
@@ -100,4 +145,11 @@ function deskMoved(deskCircle) {
         deskCircle.classList.remove('desk-unmoved');
         deskCircle.classList.add('desk-moved');
     }
+}
+
+function resetDeskPosition(deskDiv, deskCircle, leftPosition, topPosition) {
+    deskCircle.classList.remove('desk-moved');
+    deskCircle.classList.add('desk-unmoved');
+    deskDiv.style.top = topPosition + 'px';
+    deskDiv.style.left = leftPosition + 'px';
 }

@@ -69,7 +69,7 @@ public class DeskBookingService {
      * @return List of {@link DeskDto}
      */
 
-    @Cacheable(value = "bookingsForDate", key = "#date")
+//    @Cacheable(value = "bookingsForDate", key = "#date")
     public ArrayList<DeskDto> getDesksForLayout(LocalDate date) {
         log.info("getDesksForLayout - date: {}", date);
         ArrayList<DeskDto> desks = new ArrayList<>();
@@ -138,7 +138,7 @@ public class DeskBookingService {
         return desk.orElseThrow(DeskNotFoundException::new);
     }
 
-    @Cacheable(value = "allDesks")
+//    @Cacheable(value = "allDesks")
     public List<DeskDto> getAllDesks() {
         ArrayList<DeskDto> desks = new ArrayList<>();
         List<Booking> reservedDesks = getPermanentBookings();
@@ -361,7 +361,7 @@ public class DeskBookingService {
     }
 
     @Transactional(readOnly = true)
-    @Cacheable(value = "permanentBookings")
+//    @Cacheable(value = "permanentBookings")
     public List<BookingDto> getAllPermanentBookings() {
         return bookingRepository.findAllByPermanentTrue().stream()
                 .sorted(Comparator.comparing(booking -> booking.getUser().getDisplayName()))

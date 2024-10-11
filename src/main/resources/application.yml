@@ -1,0 +1,42 @@
+spring:
+  application:
+    name: deskbooking
+  datasource:
+    url: jdbc:mariadb://localhost:3306/deskbooking
+    username: root
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  security:
+    oauth2:
+      client:
+        provider:
+          azure-ad:
+            authorization-uri: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?prompt=select_account
+            token-uri: https://login.microsoftonline.com/common/oauth2/v2.0/token
+            jwk-set-uri: https://login.microsoftonline.com/common/discovery/v2.0/keys
+        registration:
+          azure-client:
+            provider: azure-ad
+            client-id: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+            client-secret: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+            authorization-grant-type: authorization_code
+            redirect-uri: '{baseUrl}/login/oauth2/code/'
+            scope: openid,profile
+  cache:
+    type: caffeine
+    cache-names:
+      - permanentBookings
+      - usersWithoutPermanentBookings
+      - allDesks
+      - bookingsForDate
+    caffeine:
+      spec: expireAfterWrite=5m,initialCapacity=100
+server:
+  forward-headers-strategy: native
+
+system:
+  allowed-domains:
+    - bookmydesk.co.za

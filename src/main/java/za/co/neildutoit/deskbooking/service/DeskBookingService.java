@@ -208,8 +208,8 @@ public class DeskBookingService {
         User user = userService.getUser(userId);
         Desk desk = getDesk(deskId);
 
-        Optional<Booking> permanentBookingForUser = bookingRepository.findAllByUserIdAndPermanentTrue(desk.getId());
-        if (permanentBookingForUser.isPresent()) {
+        List<Booking> permanentBookingForUser = bookingRepository.findAllByUserIdAndPermanentTrue(desk.getId());
+        if (!permanentBookingForUser.isEmpty()) {
             throw new BookingException("The user already has a reserved desk");
         }
 
@@ -355,6 +355,16 @@ public class DeskBookingService {
 
         for (Booking booking : bookings) {
             bookedDates.add(booking.getDate());
+        }
+
+        List<Booking> permanentBookings = bookingRepository.findAllByUserIdAndPermanentTrue(userId);
+        if (!permanentBookings.isEmpty()) {
+            LocalDate start = LocalDate.now();
+            LocalDate end = LocalDate.now().plusDays(days);
+            while (start.isBefore(end)) {
+                bookedDates.add(start);
+                start = start.plusDays(1);
+            }
         }
 
         return bookedDates;

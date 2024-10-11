@@ -35,7 +35,7 @@ public class DeskBookingService {
     private final DeskRepository deskRepository;
     private final UserService userService;
 
-    @PostConstruct
+//    @PostConstruct
     public void start() {
         int id = 1;
         ArrayList<Desk> desks = new ArrayList<>();

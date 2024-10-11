@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,6 +14,7 @@ import za.co.neildutoit.deskbooking.db.entity.Booking;
 import za.co.neildutoit.deskbooking.db.entity.User;
 import za.co.neildutoit.deskbooking.dto.BookingDto;
 import za.co.neildutoit.deskbooking.dto.UserDto;
+import za.co.neildutoit.deskbooking.dto.UserUpdateRequest;
 import za.co.neildutoit.deskbooking.exception.NotAdminUserException;
 import za.co.neildutoit.deskbooking.exception.UserNotFoundException;
 
@@ -33,6 +36,10 @@ public class UserService {
     log.info("createLocalUser - oidcId: {} - exists: {}", oidcId, userOpt.isPresent());
 
     User user = userOpt.orElseGet(() -> User.builder().oidcId(oidcId).build());
+
+    if (!user.isEnabled()) {
+      throw new OAuth2AuthenticationException(new OAuth2Error("invalid_token"), "User account disabled");
+    }
 
     String email = (String) oidcUser.getAttributes().get("preferred_username");
     String displayName = (String) oidcUser.getAttributes().get("name");
@@ -56,6 +63,7 @@ public class UserService {
             .sorted(Comparator.comparing(User::getDisplayName))
             .map(user -> UserDto.builder()
                     .id(user.getId())
+                    .enabled(user.isEnabled())
                     .email(user.getEmail().toLowerCase())
                     .displayName(user.getDisplayName())
                     .isAdmin(user.isAdmin())
@@ -93,18 +101,37 @@ public class UserService {
     }
   }
 
-  public void setAdmin(Long userId, boolean admin) {
+  public void updateUser(Long userId, UserUpdateRequest request) {
     User currentUser = getCurrentUser();
 
     Optional<User> userOpt = userRepository.findById(userId);
     if (userOpt.isPresent()) {
       User user = userOpt.get();
-      if (user.getId() != currentUser.getId()) {
-        user.setAdmin(admin);
-        userRepository.save(user);
-      } else {
-        //TODO: Throw exception
+      if (request.getAdmin() != null) {
+        updateAdmin(currentUser, user, request.getAdmin());
       }
+      if (request.getEnabled() != null) {
+        updateEnabled(currentUser, user, request.getEnabled());
+      }
+      userRepository.save(user);
+    } else {
+      //TODO: Throw exception
+    }
+  }
+
+  private void updateAdmin(User currentUser, User user, Boolean admin) {
+    if (user.getId() != currentUser.getId()) {
+      user.setAdmin(admin);
+      userRepository.save(user);
+    } else {
+      //TODO: Throw exception
+    }
+  }
+
+  private void updateEnabled(User currentUser, User user, Boolean enabled) {
+    if (user.getId() != currentUser.getId()) {
+      user.setEnabled(enabled);
+      userRepository.save(user);
     } else {
       //TODO: Throw exception
     }

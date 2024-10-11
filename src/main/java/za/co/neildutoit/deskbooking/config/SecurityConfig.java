@@ -1,5 +1,6 @@
 package za.co.neildutoit.deskbooking.config;
 
+import za.co.neildutoit.deskbooking.handler.CustomAuthenticationFailureHandler;
 import za.co.neildutoit.deskbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -18,6 +19,7 @@ public class SecurityConfig {
 
     private final CustomConfig config;
     private final UserService userService;
+  private final CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -30,13 +32,10 @@ public class SecurityConfig {
                         .userInfoEndpoint(userInfo -> userInfo
                                 .oidcUserService(this.oidcUserService())
                         )
+                        .failureHandler(customAuthenticationFailureHandler)
                 )
                 .csrf(AbstractHttpConfigurer::disable)
                 .logout(logout -> logout.logoutSuccessUrl("/home"))
-        //TODO
-//                .exceptionHandling()
-//                  .accessDeniedPage("/forbidden");
-
         ;
 
         return http.build();

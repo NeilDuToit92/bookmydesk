@@ -1,4 +1,3 @@
-
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();
 });
@@ -31,7 +30,8 @@ function loadUsers() {
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Is Admin</th>
+                            <th>Enabled</th>
+                            <th>Admin</th>
                             <th>Upcoming Bookings</th>
                             <th>Total Bookings</th>
                             <th></th>
@@ -47,11 +47,15 @@ function loadUsers() {
 
             users.forEach((user, index) => {
                 const userRow = document.createElement('tr');
-                userRow.classList.add('clickable-row');
 
                 userRow.innerHTML = `
                             <td>${user.displayName}</td>
                             <td>${user.email}</td>
+                            <td>
+                                <label>
+                                     <input type="checkbox" ${user.enabled ? 'checked' : ''} onchange="handleEnabledToggle(${user.id}, this.checked)"/>
+                                </label>
+                            </td>
                             <td>
                                 <label>
                                      <input type="checkbox" ${user.admin ? 'checked' : ''} onchange="handleAdminToggle(${user.id}, this.checked)"/>
@@ -75,7 +79,7 @@ function loadUsers() {
                 upcomingBookingRow.id = `upcoming-bookings-${index}`;
                 upcomingBookingRow.classList.add('hidden-row-hide');
 
-                let upcomingBookingsHtml = '<td colspan="6"><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
+                let upcomingBookingsHtml = '<td colspan="7"><h2>Upcoming Bookings</h2><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
                 user.upcomingBookings.forEach(booking => {
                     upcomingBookingsHtml += `<tr>
                                 <td>${booking.permanent ? 'Permanent' : booking.date}</td>
@@ -91,7 +95,7 @@ function loadUsers() {
                 allBookingRow.id = `all-bookings-${index}`;
                 allBookingRow.classList.add('hidden-row-hide');
 
-                let allBookingsHtml = '<td colspan="6"><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
+                let allBookingsHtml = '<td colspan="7"><h2>All Bookings</h2><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
                 user.allBookings.forEach(booking => {
                     allBookingsHtml += `<tr>
                                 <td>${booking.permanent ? 'Permanent' : booking.date}</td>
@@ -213,22 +217,31 @@ function toggleAllBookings(rowId) {
 }
 
 function handleAdminToggle(userId, isAdmin) {
-    const url = `/api/user/${userId}/admin`;
-    const data = { admin: isAdmin };
+    const data = {admin: isAdmin};
+    handleUserUpdate(userId, JSON.stringify(data));
+}
+
+function handleEnabledToggle(userId, enabled) {
+    const data = {enabled: enabled};
+    handleUserUpdate(userId, JSON.stringify(data));
+}
+
+function handleUserUpdate(userId, payload) {
+    const url = `/api/user/${userId}`;
 
     fetch(url, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: payload,
     })
         .then(response => response.json())
         .then(data => {
             console.log('Success:', data);
         })
         .catch(error => {
-            //TODO: reset UI tickbox if error occurs
+            //TODO: reset UI if error occurs
             console.error('Error:', error);
         });
 }

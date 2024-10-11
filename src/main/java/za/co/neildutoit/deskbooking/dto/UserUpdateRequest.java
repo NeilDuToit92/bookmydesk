@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AdminToggleRequest {
-  private boolean admin;
+public class UserUpdateRequest {
+  private Boolean enabled;
+  private Boolean admin;
 }

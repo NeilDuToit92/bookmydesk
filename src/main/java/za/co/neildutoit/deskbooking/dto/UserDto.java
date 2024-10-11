@@ -12,6 +12,7 @@ public class UserDto {
   private String email;
   private String displayName;
   private boolean isAdmin;
+  private boolean enabled;
   private List<BookingDto> allBookings;
   private List<BookingDto> upcomingBookings;
   private Integer bookingCount;

@@ -24,6 +24,8 @@ public class User {
     private String displayName;
     @Builder.Default
     private boolean isAdmin = false;
+    @Builder.Default
+    private boolean enabled = true;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)

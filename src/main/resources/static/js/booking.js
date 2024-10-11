@@ -341,7 +341,12 @@ function addSingleEventListeners() {
             });
     });
 
-    // Optional: You can add this script if you want to close the popup when clicking outside
+    document.getElementById('overlay').addEventListener('click', function (event) {
+        bookPopup.style.display = 'none';
+        cancelPopup.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+
     document.addEventListener('click', function (event) {
         if (!event.target.closest('.desk-div')) {
             document.querySelectorAll('.popup-info').forEach(function (popup) {

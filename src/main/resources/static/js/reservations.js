@@ -86,7 +86,7 @@ function fetchAndDisplayDesks() {
 
 function addSingleEventListeners() {
     const overlay = document.getElementById('overlay');
-    const bookPopup = document.getElementById('bookPopup');
+    const reservePopup = document.getElementById('reservePopup');
     const cancelPopup = document.getElementById('cancelPopup');
     const closePopupBooking = document.getElementById('closePopupBooking');
     const closePopupCancel = document.getElementById('closePopupCancel');
@@ -95,7 +95,7 @@ function addSingleEventListeners() {
 
     closePopupBooking.addEventListener('click', function () {
         overlay.style.display = 'none';
-        bookPopup.style.display = 'none';
+        reservePopup.style.display = 'none';
     });
 
     closePopupCancel.addEventListener('click', function () {
@@ -120,14 +120,14 @@ function addSingleEventListeners() {
                     });
                 }
                 overlay.style.display = 'none';
-                bookPopup.style.display = 'none';
+                reservePopup.style.display = 'none';
                 fetchAndDisplayDesks();
                 fetchBookedDates();
                 showToast("Reservation success", "success")
             })
             .catch(error => {
                 overlay.style.display = 'none';
-                bookPopup.style.display = 'none';
+                reservePopup.style.display = 'none';
                 fetchAndDisplayDesks();
                 showToast(error, "error")
             });
@@ -162,6 +162,12 @@ function addSingleEventListeners() {
     //         });
     // });
 
+    document.getElementById('overlay').addEventListener('click', function (event) {
+        reservePopup.style.display = 'none';
+        cancelPopup.style.display = 'none';
+        overlay.style.display = 'none';
+    });
+
     document.addEventListener('click', function (event) {
         if (!event.target.closest('.desk-div')) {
             document.querySelectorAll('.popup-info').forEach(function (popup) {
@@ -171,10 +177,8 @@ function addSingleEventListeners() {
     });
 }
 
-function showPopup(element, overlay, bookPopup, cancelPopup) {
-    // let deskStatus = element.getAttribute('data-status');
-    // if (deskStatus === "AVAILABLE" || deskStatus === "BOOKED") {
-
+function showPopup(element, overlay, reservePopup, cancelPopup) {
+    let deskStatus = element.getAttribute('data-status');
 
     let deskId = element.textContent;
     let deskDbId = element.getAttribute('data-id');
@@ -186,26 +190,33 @@ function showPopup(element, overlay, bookPopup, cancelPopup) {
     deskIdSpan.textContent = deskId;
     deskId2Span.textContent = deskId;
     deskDbIdInput.value = deskDbId;
-    bookPopup.style.display = 'block';
-    // }
+
+    switch (deskStatus) {
+        case "AVAILABLE":
+            reservePopup.style.display = 'block';
+            break;
+        case "RESERVED":
+            cancelPopup.style.display = 'block';
+            break;
+    }
 }
 
 function addRecurringEventListeners() {
     const desks = document.querySelectorAll('.desk');
     const overlay = document.getElementById('overlay');
-    const bookPopup = document.getElementById('bookPopup');
+    const reservePopup = document.getElementById('reservePopup');
     const cancelPopup = document.getElementById('cancelPopup');
 
     desks.forEach(desk => {
         desk.addEventListener('click', function () {
-            showPopup(this, overlay, bookPopup, cancelPopup);
+            showPopup(this, overlay, reservePopup, cancelPopup);
         });
         let deskSelector = desk.closest('.desk-div').querySelector('.popup-info');
         if (deskSelector) {
             deskSelector.addEventListener('click', function () {
                 let deskDiv = this.parentElement;
                 let desk = deskDiv.querySelector('.desk');
-                showPopup(desk, overlay, bookPopup, cancelPopup);
+                showPopup(desk, overlay, reservePopup, cancelPopup);
             });
         }
     });

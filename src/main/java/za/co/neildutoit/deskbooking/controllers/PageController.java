@@ -49,6 +49,17 @@ public class PageController {
     return "reservations";
   }
 
+  @RequestMapping(path = {"/users"})
+  public String users(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    User user = userService.getCurrentUser();
+    if (user == null || !user.isAdmin()) {
+      return "redirect:/home";
+    }
+    model.addAttribute("name", name);
+    return "users";
+  }
+
+
 
   @RequestMapping(path = {"/admin"})
   public String admin(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {

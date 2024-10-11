@@ -251,3 +251,8 @@ button:hover {
 #confirmBooking {
     background-color: green;
 }
+
+.btn-small {
+    padding: 3px;
+    margin: 0;
+}

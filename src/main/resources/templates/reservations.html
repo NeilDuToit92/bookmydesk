@@ -15,7 +15,7 @@
         <h2 th:text="'Welcome ' + ${name}"></h2>
         <h2>Permanent desk reservations</h2>
         <div class="menu">
-            <button th:if="${isAdmin}" onclick="location.href='/admin'">Admin</button>
+            <button onclick="location.href='/admin'">Back</button>
             <button onclick="location.href='/logout'">Logout</button>
         </div>
     </div>
@@ -27,7 +27,7 @@
 
 <div class="overlay" id="overlay">
     <input type="hidden" id="deskDbId">
-    <div class="popup" id="bookPopup">
+    <div class="popup" id="reservePopup">
         <h3>Permanently Reserve Desk <span id="deskId"></span> for user dropdown</h3>
         <button type="button" id="confirmBooking">Confirm</button>
         <button type="button" id="closePopupBooking">Close</button>

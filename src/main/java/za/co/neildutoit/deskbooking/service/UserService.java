@@ -15,6 +15,7 @@ import za.co.neildutoit.deskbooking.dto.UserDto;
 import za.co.neildutoit.deskbooking.exception.NotAdminUserException;
 import za.co.neildutoit.deskbooking.exception.UserNotFoundException;
 
+import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -59,7 +60,20 @@ public class UserService {
                     .displayName(user.getDisplayName())
                     .isAdmin(user.isAdmin())
                     .bookingCount(user.getBookings().size())
-                    .bookings(user.getBookings().stream()
+                    .upcomingBookingCount((int) user.getBookings().stream()
+                            .filter(booking -> !booking.getDate().isBefore(LocalDate.now()))
+                            .count())
+                    .allBookings(user.getBookings().stream()
+                            .sorted(Comparator.comparing(Booking::getDate))
+                            .map(booking -> BookingDto.builder()
+                                    .databaseId(booking.getId())
+                                    .displayId(booking.getDesk().getDisplayName())
+                                    .date(booking.getDate())
+                                    .permanent(booking.isPermanent())
+                                    .build())
+                            .collect(Collectors.toList()))
+                    .upcomingBookings(user.getBookings().stream()
+                            .filter(booking -> booking.isPermanent() || (booking.getDate() != null && !booking.getDate().isBefore(LocalDate.now())))
                             .sorted(Comparator.comparing(Booking::getDate))
                             .map(booking -> BookingDto.builder()
                                     .databaseId(booking.getId())
@@ -76,6 +90,23 @@ public class UserService {
     User user = getCurrentUser();
     if (user == null || !user.isAdmin()) {
       throw new NotAdminUserException("Forbidden: You do not have permission to access this resource.");
+    }
+  }
+
+  public void setAdmin(Long userId, boolean admin) {
+    User currentUser = getCurrentUser();
+
+    Optional<User> userOpt = userRepository.findById(userId);
+    if (userOpt.isPresent()) {
+      User user = userOpt.get();
+      if (user.getId() != currentUser.getId()) {
+        user.setAdmin(admin);
+        userRepository.save(user);
+      } else {
+        //TODO: Throw exception
+      }
+    } else {
+      //TODO: Throw exception
     }
   }
 }

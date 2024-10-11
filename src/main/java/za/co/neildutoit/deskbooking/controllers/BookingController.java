@@ -3,6 +3,7 @@ package za.co.neildutoit.deskbooking.controllers;
 import za.co.neildutoit.deskbooking.db.entity.User;
 import za.co.neildutoit.deskbooking.dto.BookingDto;
 import za.co.neildutoit.deskbooking.dto.CoordinateDto;
+import za.co.neildutoit.deskbooking.dto.MessageDto;
 import za.co.neildutoit.deskbooking.service.DeskBookingService;
 import za.co.neildutoit.deskbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,18 +24,18 @@ public class BookingController {
 
   //Book seat
   @PostMapping("/{deskId}")
-  public String bookDesk(@PathVariable long deskId, @RequestParam LocalDate date) {
+  public MessageDto bookDesk(@PathVariable long deskId, @RequestParam LocalDate date) {
     log.info("bookDesk - deskId: {}, date: {}", deskId, date);
     deskBookingService.bookDeskForCurrentUser(date, deskId);
-    return "OK";
+    return new MessageDto("OK");
   }
 
   //Cancel Booking - current user
   @DeleteMapping("/{deskId}")
-  public String cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
+  public MessageDto cancelBooking(@PathVariable long deskId, @RequestParam LocalDate date) {
     log.info("cancelBooking - deskId: {}, date: {}", deskId, date);
     deskBookingService.cancelBooking(date, deskId);
-    return "OK";
+    return new MessageDto("OK");
   }
 
   //Get all bookings for person

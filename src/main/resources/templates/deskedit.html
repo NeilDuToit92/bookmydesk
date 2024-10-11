@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Booking</title>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+    <link th:href="@{/css/deskedit.css}" rel="stylesheet"/>
+</head>
+<body>
+<script type="text/javascript" th:src="@{/js/deskedit.js}"></script>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name}"></h2>
+        <div class="header-content">
+            <input id="bookingDate" type="hidden">
+            <div id="weekdays">
+                <!-- Days of the week will be added here -->
+            </div>
+        </div>
+        <div class="menu">
+            <button th:if="${isAdmin}" onclick="location.href='/admin'">Admin</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+    </div>
+</div>
+
+<div class="image-container">
+    <img id="backgroundImage" th:src="@{/img/floorplan.png}" alt="Floor plan">
+    <div th:if="${heatmap}" id="heatmap"></div>
+</div>
+
+<div id="toast" class="toast"></div>
+</body>
+</html>

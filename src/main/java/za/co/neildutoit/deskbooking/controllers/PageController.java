@@ -15,7 +15,6 @@ import za.co.neildutoit.deskbooking.service.UserService;
 public class PageController {
 
   private final UserService userService;
-  private final DeskBookingService deskBookingService;
 
   @RequestMapping(path = {"/", "/home"})
   public String home(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name, @RequestParam(required = false) Boolean heatmap) {
@@ -28,6 +27,12 @@ public class PageController {
     model.addAttribute("isAdmin",isAdmin);
     model.addAttribute("heatmap", Boolean.TRUE.equals(heatmap));
     return "home";
+  }
+
+  @RequestMapping(path = {"/deskedit"})
+  public String deskedit(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    model.addAttribute("name", name);
+    return "deskedit";
   }
 
   @RequestMapping(path = {"/admin"})

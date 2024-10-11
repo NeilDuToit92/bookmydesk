@@ -41,7 +41,7 @@ public class Booking {
     /**
      * The date for which the desk is reserved - unless permanent is set to true
      */
-    @Nullable
+
     private LocalDate date;
 
     /**

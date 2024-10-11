@@ -188,8 +188,7 @@ button:hover {
 
 .toast {
     visibility: hidden;
-    min-width: 250px;
-    margin-left: -125px;
+    max-width: 80%; /* Ensure it doesn't take more than 80% of the screen width */
     background-color: #333;
     color: #fff;
     text-align: center;
@@ -205,6 +204,7 @@ button:hover {
     transform: translateY(100%);
     transition: transform 0.5s ease, opacity 0.5s ease;
     font-weight: bold;
+    min-width: 180px;
 }
 
 .toast-success {

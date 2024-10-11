@@ -7,4 +7,8 @@ import lombok.Data;
 @Builder
 public class MessageDto {
   private String message;
+
+  public MessageDto(String message) {
+    this.message = message;
+  }
 }

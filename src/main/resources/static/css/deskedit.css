@@ -1,0 +1,21 @@
+.xy-number-input {
+    width: 55px;
+    padding: 10px;
+    margin: 5px;
+}
+
+.desk-div:hover {
+    cursor: pointer;
+}
+
+.popup-info {
+    top: 15px !important;
+}
+
+.desk-unmoved {
+    background-color: rgba(0, 175, 0);
+}
+
+.desk-moved {
+    background-color: rgb(222, 159, 0);
+}

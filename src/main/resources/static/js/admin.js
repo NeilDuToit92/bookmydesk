@@ -1,13 +1,3 @@
-function toggleBookings(rowId) {
-    let bookingsRow = document.getElementById("bookings-" + rowId);
-    if (bookingsRow.classList.contains('hidden-row-hide')) {
-        bookingsRow.classList.remove('hidden-row-hide');
-        bookingsRow.classList.add('hidden-row-show');
-    } else {
-        bookingsRow.classList.remove('hidden-row-show');
-        bookingsRow.classList.add('hidden-row-hide');
-    }
-}
 
 document.addEventListener('DOMContentLoaded', () => {
     loadUsers();
@@ -42,7 +32,8 @@ function loadUsers() {
                             <th>Name</th>
                             <th>Email</th>
                             <th>Is Admin</th>
-                            <th>Bookings</th>
+                            <th>Upcoming Bookings</th>
+                            <th>Total Bookings</th>
                             <th></th>
                         </tr>
                     `;
@@ -63,34 +54,54 @@ function loadUsers() {
                             <td>${user.email}</td>
                             <td>
                                 <label>
-                                    <input type="checkbox" ${user.isAdmin ? 'checked' : ''}/>
+                                     <input type="checkbox" ${user.admin ? 'checked' : ''} onchange="handleAdminToggle(${user.id}, this.checked)"/>
                                 </label>
                             </td>
+                            <td>${user.upcomingBookingCount}</td>
                             <td>${user.bookingCount}</td>
                             <td>
-                                <button type="button" class="btn btn-link" onclick="toggleBookings(${index})">
-                                    Toggle Bookings
+                                <button type="button" class="btn btn-link" onclick="toggleAllBookings(${index})">
+                                    All Bookings
+                                </button>
+                                <button type="button" class="btn btn-link" onclick="toggleUpcomingBookings(${index})">
+                                    Upcoming Bookings
                                 </button>
                             </td>
                         `;
 
                 tbody.appendChild(userRow);
 
-                const bookingRow = document.createElement('tr');
-                bookingRow.id = `bookings-${index}`;
-                bookingRow.classList.add('hidden-row-hide');
+                const upcomingBookingRow = document.createElement('tr');
+                upcomingBookingRow.id = `upcoming-bookings-${index}`;
+                upcomingBookingRow.classList.add('hidden-row-hide');
 
-                let bookingsHtml = '<td colspan="5"><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
-                user.bookings.forEach(booking => {
-                    bookingsHtml += `<tr>
+                let upcomingBookingsHtml = '<td colspan="6"><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
+                user.upcomingBookings.forEach(booking => {
+                    upcomingBookingsHtml += `<tr>
                                 <td>${booking.permanent ? 'Permanent' : booking.date}</td>
                                 <td>${booking.displayId}</td>
                             </tr>`;
                 });
-                bookingsHtml += '</tbody></table></td>';
+                upcomingBookingsHtml += '</tbody></table></td>';
 
-                bookingRow.innerHTML = bookingsHtml;
-                tbody.appendChild(bookingRow);
+                upcomingBookingRow.innerHTML = upcomingBookingsHtml;
+                tbody.appendChild(upcomingBookingRow);
+
+                const allBookingRow = document.createElement('tr');
+                allBookingRow.id = `all-bookings-${index}`;
+                allBookingRow.classList.add('hidden-row-hide');
+
+                let allBookingsHtml = '<td colspan="6"><table style="width: 25%;"><thead><tr><th>Date</th><th>Desk ID</th></tr></thead><tbody>';
+                user.allBookings.forEach(booking => {
+                    allBookingsHtml += `<tr>
+                                <td>${booking.permanent ? 'Permanent' : booking.date}</td>
+                                <td>${booking.displayId}</td>
+                            </tr>`;
+                });
+                allBookingsHtml += '</tbody></table></td>';
+
+                allBookingRow.innerHTML = allBookingsHtml;
+                tbody.appendChild(allBookingRow);
             });
         })
         .catch(error => console.error('Error fetching user data:', error));
@@ -156,7 +167,6 @@ function loadDesks() {
                             <th>Desk ID</th>
                             <th>X coordinate</th>
                             <th>Y coordinate</th>
-<!--                            <th></th>-->
                         </tr>
                     `;
             table.appendChild(thead);
@@ -180,7 +190,45 @@ function loadDesks() {
         .catch(error => console.error('Error fetching desk data:', error));
 }
 
-function toggleBookings(index) {
-    const bookingRow = document.getElementById(`bookings-${index}`);
-    bookingRow.classList.toggle('hidden-row-hide');
+function toggleUpcomingBookings(rowId) {
+    let bookingsRow = document.getElementById("upcoming-bookings-" + rowId);
+    if (bookingsRow.classList.contains('hidden-row-hide')) {
+        bookingsRow.classList.remove('hidden-row-hide');
+        bookingsRow.classList.add('hidden-row-show');
+    } else {
+        bookingsRow.classList.remove('hidden-row-show');
+        bookingsRow.classList.add('hidden-row-hide');
+    }
+}
+
+function toggleAllBookings(rowId) {
+    let bookingsRow = document.getElementById("all-bookings-" + rowId);
+    if (bookingsRow.classList.contains('hidden-row-hide')) {
+        bookingsRow.classList.remove('hidden-row-hide');
+        bookingsRow.classList.add('hidden-row-show');
+    } else {
+        bookingsRow.classList.remove('hidden-row-show');
+        bookingsRow.classList.add('hidden-row-hide');
+    }
+}
+
+function handleAdminToggle(userId, isAdmin) {
+    const url = `/api/user/${userId}/admin`;
+    const data = { admin: isAdmin };
+
+    fetch(url, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+    })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch(error => {
+            //TODO: reset UI tickbox if error occurs
+            console.error('Error:', error);
+        });
 }

@@ -1,16 +1,14 @@
 package za.co.neildutoit.deskbooking.service;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import za.co.neildutoit.deskbooking.db.Repository.BookingRepository;
 import za.co.neildutoit.deskbooking.db.entity.Booking;
 import za.co.neildutoit.deskbooking.db.entity.Desk;
 import za.co.neildutoit.deskbooking.db.entity.User;
 import za.co.neildutoit.deskbooking.dto.BookingDto;
-import za.co.neildutoit.deskbooking.exception.DoubleBookingException;
-import za.co.neildutoit.deskbooking.exception.MultipleBookingException;
-import za.co.neildutoit.deskbooking.exception.InvalidDateException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import za.co.neildutoit.deskbooking.exception.BookingException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -35,30 +33,31 @@ public class BookingService {
 
         //Do not allow weekend booking
         if (DayOfWeek.SATURDAY.equals(date.getDayOfWeek()) || DayOfWeek.SUNDAY.equals(date.getDayOfWeek())) {
-            throw new InvalidDateException();
+            throw new BookingException("Weekend booking is not allowed");
         }
 
         //Do not historic date booking
         if (date.isBefore(LocalDate.now())) {
-            throw new InvalidDateException();
+            throw new BookingException("Booking for historic dates is not allowed");
         }
 
         //Only allow booking for X weeks in advance
         //TODO: Make this configurable
-        if (date.isAfter(LocalDate.now().plusWeeks(4))) {
-            throw new InvalidDateException();
+        int weeksAllowed = 4;
+        if (date.isAfter(LocalDate.now().plusWeeks(weeksAllowed))) {
+            throw new BookingException("Booking more than " + weeksAllowed + " weeks in advance is not allowed");
         }
 
         //A desk can not be booked twice for the same day
         Optional<Booking> existingBookingForDesk = bookingRepository.findAllByDeskIdAndDate(desk.getId(), date);
         if (existingBookingForDesk.isPresent()) {
-            throw new DoubleBookingException();
+            throw new BookingException("The desk has already been booked");
         }
 
         //A user can only have one booking per day
         Optional<Booking> existingBookingForUser = bookingRepository.findAllByUserIdAndDate(user.getId(), date);
         if (existingBookingForUser.isPresent()) {
-            throw new MultipleBookingException();
+            throw new BookingException("Only one desk is allowed per day");
         }
 
         bookingRepository.save(Booking.builder()

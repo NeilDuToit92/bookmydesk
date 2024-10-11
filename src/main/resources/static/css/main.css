@@ -1,0 +1,335 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-top: 60px;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+.popup {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+.desk-div:hover {
+    cursor: pointer;
+}
+
+.desk:hover {
+    cursor: pointer;
+}
+
+.image-container {
+    width: 1920px;
+    position: relative;
+}
+
+.image-container img {
+    width: 1920px;
+    height: auto;
+    display: block;
+    position: relative; /* Ensure the image is positioned relative to its container */
+}
+
+.desk {
+    position: absolute;
+    border-radius: 50%;
+
+    width: 25px; /* Adjust size of the circle */
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.desk-available {
+    background-color: rgba(0, 175, 0, 0.5);
+}
+
+.desk-booked {
+    background-color: rgba(255, 0, 0, 0.5);
+}
+
+.desk-reserved {
+    background-color: rgba(0, 0, 255, 0.5);
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.sticky-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #f8f9fa; /* You can adjust the background color as needed */
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Adds a shadow for better visibility */
+    z-index: 999; /* Make sure it's above other content */
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+.header-content h2 {
+    margin-right: 10px;
+}
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black */
+    z-index: 1000; /* Ensure it's on top of other elements */
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-text {
+    color: #ffffff; /* White text */
+    font-size: 24px;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 20px 0;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+th, td {
+    border: 1px solid #01468e; /* Navy Blue */
+    text-align: left;
+    padding: 12px;
+    vertical-align: top;
+}
+
+th {
+    background-color: #01468e; /* Navy Blue */
+    color: white;
+}
+
+tr:hover {
+    background-color: #deeff5; /* Light Blue */
+}
+
+.error-message {
+    color: #ff0000; /* Red color for error messages */
+    font-weight: bold;
+}
+
+.collapsible-content {
+    display: none;
+}
+
+ul {
+    margin: 0;
+    padding-left: 17px;
+}
+
+
+.collapsible-button {
+    cursor: pointer;
+    background-color: #007bff;
+    color: #ffffff;
+    padding: 5px;
+    border: none;
+    border-radius: 3px;
+    margin-bottom: 10px;
+}
+
+.collapsible-button:hover {
+    cursor: pointer;
+    background-color: #1e66b0;
+}
+
+.refresh-icon {
+    color: #007bff;
+}
+
+.refresh-icon:hover {
+    cursor: pointer;
+    color: #1e66b0;
+}
+
+input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+button {
+    background-color: #007bff;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #1e66b0; /* Navy Blue */
+
+}
+
+.version-entry {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.version-entry span {
+    margin-right: 5px;
+}
+
+.version-entry select {
+    margin-right: 10px;
+    padding: 5px;
+}
+
+.nameLabel {
+    width: 250px;
+}
+
+.prodVersionLabel {
+    width: 150px;
+    text-align: right;
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.input-container span {
+    margin-right: 5px;
+}
+
+.input-container input {
+    padding: 5px;
+    width: 75px;
+    box-sizing: border-box;
+}
+
+.ticket-row {
+    cursor: pointer;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-container h1,
+.header-container button {
+    margin-right: 10px;
+}
+
+.service-checkbox-label {
+    width: 215px;
+    display: inline-block;
+}
+
+.service-checkbox-label-prod-version,
+.service-checkbox-label-latest-version {
+    width: 120px;
+    display: inline-block;
+}
+
+hr {
+    margin: 3px;
+}
+
+#selectServicesInnerDiv {
+    width: fit-content;
+}
+
+.popup-info {
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 0 10px 0 10px;
+    border-radius: 5px;
+    z-index: 1;
+    white-space: nowrap;
+    top: 11px;
+    left: 11px;
+}
+
+.desk:hover .popup-info {
+    display: inline-block;
+}
+
+.desk-div:hover .popup-info {
+    display: inline-block;
+}
+
+#bookPopup, #cancelPopup {
+    display: none;
+}
+
+.day-block {
+    display: inline-block;
+    width: 35px; /* Adjust width as needed */
+    text-align: center;
+    border: 1px solid #ccc;
+    cursor: pointer;
+}
+
+.weekend-block {
+    display: inline-block;
+    border: 1px solid #ccc;
+    width: 35px;
+    background-color: #bfbfbf;
+    text-align: center;
+}
+
+.day-block:hover {
+    background-color: #f0f0f0;
+}
+
+.day-name {
+    font-size: smaller;
+}
+
+.day-date {
+    font-size: larger;
+}
+
+.current-day {
+    background-color: lightblue;
+    font-weight: bold;
+}
+
+.current-day {
+    background-color: rgba(255, 0, 0, 0.86);
+}

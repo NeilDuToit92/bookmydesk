@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desk Booking</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+          crossorigin="anonymous"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<script type="text/javascript" th:src="@{/js/booking.js}"></script>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name}"></h2>
+        <label>
+            <input id="bookingDate" type="date">
+        </label>
+        <button id="prevDay" onclick="changeDate(-1)">&lt;</button>
+        <button id="nextDay" onclick="changeDate(1)">&gt;</button>
+        <div id="weekdays">
+            <!-- Days of the week will be added here -->
+        </div>
+    </div>
+</div>
+
+
+<div class="image-container">
+    <img th:src="@{/img/floorplan.png}" alt="Floor plan">
+</div>
+
+<div class="overlay" id="overlay">
+    <input type="hidden" id="deskDbId">
+    <div class="popup" id="bookPopup">
+        <h3>Book Desk <span id="deskId"></span> for <span id="dateToBook"></span></h3>
+        <button type="button" id="confirmBooking">Confirm</button>
+        <button type="button" id="closePopupBooking">Close</button>
+    </div>
+
+    <div class="popup" id="cancelPopup">
+        <h3>Cancel Booking for Desk <span id="deskId2"></span> for <span id="dateToBook2"></span></h3>
+        <button type="button" id="cancelBooking">Confirm</button>
+        <button type="button" id="closePopupCancel">Close</button>
+    </div>
+</div>
+</body>
+</html>

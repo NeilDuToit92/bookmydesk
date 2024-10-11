@@ -41,9 +41,8 @@ public class DeskBookingService {
         ArrayList<Desk> desks = new ArrayList<>();
 
         //Right side office
-        int[] cols1 = new int[]{1575, 1620, 1665, 1747, 1792, 1837};
-        int[] rows1 = new int[]{339, 365, 450, 477, 615, 641, 726, 753};
-
+        int[] cols1 = new int[]{1583, 1629, 1675, 1755, 1802, 1848};
+        int[] rows1 = new int[]{317, 343, 428, 455, 593, 620, 705, 731};
         for (int row : rows1) {
             for (int col : cols1) {
                 desks.add(Desk.builder().id(id).displayName(id++).x(col).y(row).build());
@@ -51,9 +50,8 @@ public class DeskBookingService {
         }
 
         //Left side office
-        int[] cols2 = new int[]{156, 183, 252, 278, 412, 439, 523, 549};
-        int[] rows2 = new int[]{732, 778, 928, 973, 1019};
-
+        int[] cols2 = new int[]{164, 191, 260, 286, 420, 447, 531, 558};
+        int[] rows2 = new int[]{712, 758, 908, 953, 999};
         for (int row : rows2) {
             for (int col : cols2) {
                 desks.add(Desk.builder().id(id).displayName(id++).x(col).y(row).build());

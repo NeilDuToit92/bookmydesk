@@ -16,6 +16,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 const maxDays = 29;
 let currentUserHasBooking = false;
+const headerHeight = 89; //Header height
 
 function blockHistoricAndFutureDates() {
     const input = document.getElementById('bookingDate');
@@ -46,7 +47,7 @@ let currentFetchController = null;
 function fetchAndDisplayDesks() {
     const bookingDate = document.getElementById('bookingDate').value;
 
-    const imageContainer = document.querySelector('.image-container');
+    const desksContainer = document.getElementById('desksContainer');
 
     // Remove existing desk-div elements
     const existingDesks = document.querySelectorAll('.desk-div');
@@ -81,7 +82,7 @@ function fetchAndDisplayDesks() {
                 deskDiv.classList.add('desk-div');
                 deskDiv.style.position = 'absolute';
                 deskDiv.style.left = desk.x + 'px';
-                deskDiv.style.top = desk.y + 'px';
+                deskDiv.style.top = (desk.y + headerHeight) + 'px';
 
                 const deskCircle = document.createElement('div');
                 deskCircle.classList.add('desk');
@@ -144,10 +145,11 @@ function fetchAndDisplayDesks() {
                 }
 
                 deskDiv.appendChild(deskCircle);
-                imageContainer.appendChild(deskDiv);
+                desksContainer.appendChild(deskDiv);
             });
 
             addRecurringEventListeners();
+            scaleLayout();
         })
         .catch(error => {
             if (error.name === 'AbortError') {

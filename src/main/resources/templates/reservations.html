@@ -6,9 +6,9 @@
     <title>Desk Reservations</title>
     <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
     <link th:href="@{/css/main.css}" rel="stylesheet"/>
-    <link th:href="@{/css/heatmap.css}" rel="stylesheet"/>
 </head>
 <body>
+<script type="text/javascript" th:src="@{/js/deskscaling.js}"></script>
 <script type="text/javascript" th:src="@{/js/reservations.js}"></script>
 <script type="text/javascript" th:src="@{/js/toast.js}"></script>
 <div class="sticky-header">
@@ -25,6 +25,7 @@
 <div class="image-container">
     <img id="backgroundImage" th:src="@{/img/floorplan.png}" alt="Floor plan">
 </div>
+<div id="desksContainer"></div>
 
 <div class="overlay" id="overlay">
     <input type="hidden" id="deskDbId">

@@ -31,7 +31,6 @@ body {
     cursor: not-allowed;
 }
 .image-container {
-    width: 1920px;
     position: relative;
 }
 
@@ -52,7 +51,6 @@ body {
 .desk {
     position: absolute;
     border-radius: 50%;
-
     width: 25px; /* Adjust size of the circle */
     height: 25px;
     display: flex;
@@ -82,10 +80,10 @@ body {
 .desk-currentuser-reserved {
     background-color: rgb(198, 135, 0);
 }
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.desk-div {
+    position: absolute;
 }
+
 
 .sticky-header {
     position: fixed;
@@ -319,4 +317,11 @@ select::after {
 
 .margin-left-15 {
     margin-left: 15px;
+}
+
+#desksContainer {
+    width: 100%;
+    height: 100%;
+    display: contents;
+    transform: scale(1);
 }

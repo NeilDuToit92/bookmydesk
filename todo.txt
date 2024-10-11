@@ -1,0 +1,53 @@
+List bookings
+    - 'Bookings' page with selection (Group by user/desk) with a selectable date range
+        - Today
+        - This week
+        - This month
+        - This year
+        - Custom
+        - Reports can be generated from here
+            - Advanced features
+                - People who booked less than twice for a week
+                - Absent people on a specific date/all people on a specific date
+            - Auto send reports (email/slack)
+
+Force page reload if API call returns forbidden to force re-auth
+
+Desk layout
+    - Enable/disable a desk
+    - Save moved desks
+    - Align multiple desks vertically/horizontally
+    - Lock desk location
+    - Add/remove desks
+    - Set desk display name
+        - Scale/overflow text if more than 3 characters?
+    - Make popupInfo pretty
+    - Upload new floor plan image
+        - Download current?
+
+Admin
+    - Should be able to disable someone (if no longer with the company)
+        - Auto delete any bookings the user has
+    - Should be able to see and delete all bookings
+    - Should be able to book for any user (dropdown searchable users)
+    - Make admin landing page better
+        - Move users to sub-page
+        - Clean up navigation buttons
+    - Make users table pretty
+    - Users page can probably be Thymeleaf rendered, instead of JS
+
+Low priority
+    - Show keyboard shortcuts top right (Or somewhere)
+    - Zoom/scaling
+    - Add query param to set date
+        - Only allow if in valid range
+    - Auto disable user if not logged in for X weeks/months?
+          - Soft delete and prompt admins to check
+    - When opening booking page on weekends, it should default to the next working day
+    - Ability to block booking on public holidays
+        - Show as red in top bar
+        - Some public API??
+
+Cool features
+    - Graph showing desk count booked by day
+    - Users page - bookings should show on calendar layout instead of a table (Entire year?)

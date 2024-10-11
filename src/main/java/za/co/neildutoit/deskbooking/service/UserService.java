@@ -82,7 +82,7 @@ public class UserService {
                             .collect(Collectors.toList()))
                     .upcomingBookings(user.getBookings().stream()
                             .filter(booking -> booking.isPermanent() || (booking.getDate() != null && !booking.getDate().isBefore(LocalDate.now())))
-                            .sorted(Comparator.comparing(Booking::getDate))
+                            .sorted(Comparator.comparing(Booking::getDate, Comparator.nullsFirst(Comparator.naturalOrder())))
                             .map(booking -> BookingDto.builder()
                                     .databaseId(booking.getId())
                                     .displayId(booking.getDesk().getDisplayName())

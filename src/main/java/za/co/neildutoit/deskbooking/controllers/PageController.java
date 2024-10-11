@@ -81,6 +81,16 @@ public class PageController {
     return "admin";
   }
 
+  @RequestMapping(path = {"/todo"})
+  public String todo(final Model model, @AuthenticationPrincipal(expression = "claims['name']") String name) {
+    User user = userService.getCurrentUser();
+    if (user == null || !user.isAdmin()) {
+      return "redirect:/home";
+    }
+    model.addAttribute("name", name);
+    return "todo";
+  }
+
   @RequestMapping("/forbidden")
   public String forbidden() {
     return "forbidden";

@@ -151,12 +151,14 @@ function addSingleEventListeners() {
                 overlay.style.display = 'none';
                 reservePopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchUsersWithoutReservedDesks();
                 showToast("Reservation success", "success")
             })
             .catch(error => {
                 overlay.style.display = 'none';
                 reservePopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchUsersWithoutReservedDesks();
                 showToast(error, "error")
             });
     });
@@ -179,12 +181,14 @@ function addSingleEventListeners() {
                 overlay.style.display = 'none';
                 cancelPopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchUsersWithoutReservedDesks();
                 showToast("Cancellation success", "success")
             })
             .catch(error => {
                 overlay.style.display = 'none';
                 cancelPopup.style.display = 'none';
                 fetchAndDisplayDesks();
+                fetchUsersWithoutReservedDesks();
                 showToast(error, "error")
             });
     });

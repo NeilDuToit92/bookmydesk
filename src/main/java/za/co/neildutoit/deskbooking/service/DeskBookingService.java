@@ -20,6 +20,7 @@ import za.co.neildutoit.deskbooking.enums.DeskStatus;
 import za.co.neildutoit.deskbooking.exception.BookingException;
 import za.co.neildutoit.deskbooking.exception.DeskNotFoundException;
 
+import java.awt.print.Book;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.*;
@@ -70,6 +71,7 @@ public class DeskBookingService {
 
     @Cacheable(value = "bookingsForDate", key = "#date")
     public ArrayList<DeskDto> getDesksForLayout(LocalDate date) {
+        log.info("getDesksForLayout - date: {}", date);
         ArrayList<DeskDto> desks = new ArrayList<>();
 
         //Do not show desks when selected date falls on a weekend
@@ -78,11 +80,25 @@ public class DeskBookingService {
         }
 
         List<Booking> bookings = getBookingsForDate(date);
-        bookings.addAll(getPermanentBookings());
+        //Add permanent bookings
+        for (Booking booking : getPermanentBookings()) {
+            Booking existingBooking = null;
+
+            //Permanent bookings supersede the date based bookings
+            for (Booking existingBookingIt : bookings) {
+                if (existingBookingIt.getDesk().getId() == booking.getDesk().getId()) {
+                    existingBooking = existingBookingIt;
+                }
+            }
+            if (existingBooking != null) {
+                bookings.remove(existingBooking);
+            }
+            bookings.add(booking);
+        }
+
         User currentUser = userService.getCurrentUser();
 
         for (Desk desk : deskRepository.findAll()) {
-
             Booking bookingForDesk = null;
             boolean bookingForCurrentUser = false;
             for (Booking booking : bookings) {
@@ -179,9 +195,15 @@ public class DeskBookingService {
         bookDesk(date, desk, user, false);
     }
 
+    /**
+     *
+     * @param deskId
+     * @param userId
+     * @return bookings cancelled caused by reserving this desk
+     */
     @Transactional
-    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings", "allDesks"}, allEntries = true)
-    public void reserveDeskForUser(long deskId, long userId) {
+    @CacheEvict(value = {"bookingsForDate", "permanentBookings", "allDesks"}, allEntries = true)
+    public List<BookingDto> reserveDeskForUser(long deskId, long userId) {
         log.info("reserveDeskForUser - deskId: {}, userId : {}", deskId, userId);
         User user = userService.getUser(userId);
         Desk desk = getDesk(deskId);
@@ -191,31 +213,39 @@ public class DeskBookingService {
             throw new BookingException("The user already has a reserved desk");
         }
 
-        //TODO: Cancel any bookings made for the desk? How to handle conflicts
-        //TODO: Cancel any bookings made for user on other desks
-//    List<Booking> existingBookingsForDesk = bookingRepository.findAllByDeskIdAndDateOnOrAfter(desk.getId(), LocalDate.now());
-//    bookingRepository.deleteAll(existingBookingsForDesk);
+        //Get a list of bookings that will be cancelled
+        List<Booking> cancelledBookings = bookingRepository.findAllByDeskIdAndDateOnOrAfter(deskId, LocalDate.now());
+        cancelledBookings.addAll(bookingRepository.findAllByUserIdAndDateOnOrAfter(userId, LocalDate.now()));
+        log.info("reserveDeskForUser - cancelling bookings: {}", cancelledBookings);
 
-//    bookingRepository.save(Booking.builder()
-//            .date(LocalDate.now())
-//            .user(user)
-//            .desk(desk)
-//              .permanent(true)
-//            .build()
-//    );
+        //Cancel any date based bookings made for the desk
+        bookingRepository.deleteAll(cancelledBookings);
+        //Cancel any bookings made for user on other desks
+        bookingRepository.deleteByUserIdAndDateOnOrAfter(userId, LocalDate.now());
 
         bookDesk(null, desk, user, true);
+
+        return cancelledBookings.stream()
+                .map(booking -> BookingDto.builder()
+                        .databaseId(booking.getId())
+                        .displayId(booking.getDesk().getDisplayName())
+                        .date(booking.getDate())
+                        .permanent(booking.isPermanent())
+                        .bookedBy(booking.getUser().getDisplayName())
+                        .userId(booking.getUser().getId())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     @Transactional
-    @CacheEvict(value = {"bookingsForDate", "usersWithoutPermanentBookings", "permanentBookings", "allDesks"}, allEntries = true)
+    @CacheEvict(value = {"bookingsForDate", "permanentBookings", "allDesks"}, allEntries = true)
     public void cancelReservedDesk(long deskId) {
         log.info("cancelReservedDesk - deskId: {}", deskId);
-        Optional<Booking> permanentBookingForUser = bookingRepository.findAllByDeskIdAndPermanentTrue(deskId);
+        List<Booking> permanentBookingForUser = bookingRepository.findAllByDeskIdAndPermanentTrue(deskId);
         if (permanentBookingForUser.isEmpty()) {
             throw new BookingException("Unable to locate the reserved desk");
         } else {
-            bookingRepository.delete(permanentBookingForUser.get());
+            bookingRepository.deleteAll(permanentBookingForUser);
         }
     }
 
@@ -230,8 +260,8 @@ public class DeskBookingService {
         }
 
         //A permanently reserved desk can not be booked
-        Optional<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndPermanentTrue(desk.getId());
-        if (permanentBookingForDesk.isPresent()) {
+        List<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndPermanentTrue(desk.getId());
+        if (!permanentBookingForDesk.isEmpty()) {
             throw new BookingException("The desk is reserved");
         }
 
@@ -283,8 +313,8 @@ public class DeskBookingService {
         Desk desk = getDesk(deskId);
 
         //A permanently reserved desk can not be unbooked by normal user
-        Optional<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndPermanentTrue(desk.getId());
-        if (permanentBookingForDesk.isPresent()) {
+        List<Booking> permanentBookingForDesk = bookingRepository.findAllByDeskIdAndPermanentTrue(desk.getId());
+        if (!permanentBookingForDesk.isEmpty()) {
             throw new BookingException("The desk is reserved");
         }
 
@@ -356,7 +386,6 @@ public class DeskBookingService {
                 .collect(Collectors.toList());
     }
 
-    @Cacheable(value = "usersWithoutPermanentBookings")
     public List<UserDto> getAllUsersWithoutPermanentBookings() {
         Set<Long> bookedUserIds = bookingRepository.findAllByPermanentTrue().stream()
                 .map(booking -> booking.getUser().getId())

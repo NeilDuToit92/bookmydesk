@@ -14,17 +14,23 @@
     <div class="header-content">
         <h2 th:text="'Welcome ' + ${name} + ' (ADMIN)'"></h2>
         <div class="menu">
-            <button onclick="location.href='/home'">Desk Booking</button>
+            <button onclick="location.href='/home'">Back</button>
             <button onclick="location.href='/logout'">Logout</button>
         </div>
     </div>
 </div>
 
+<div style="width: 100%; background-color: darkred; color: white">
+    <h2>This page is still a work in progress and some/all functionality may not work - see <a style="color: white" href="/todo">Todo</a> for more</h2>
+</div>
+
 <div class="tab-buttons">
+    <button onclick="window.location.href = '/home'">Desk Booking</button>
     <button onclick="window.location.href = '/users'">Users</button>
     <button onclick="window.location.href = '/reservations'">Reservations</button>
     <button onclick="window.location.href = '/bookingadmin'">Booking admin</button>
     <button onclick="window.location.href = '/deskedit'">Desks</button>
+    <button onclick="window.location.href = '/todo'">Todo</button>
 </div>
 
 </body>

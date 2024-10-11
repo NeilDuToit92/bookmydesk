@@ -1,10 +1,8 @@
 package za.co.neildutoit.deskbooking.controllers;
 
+import za.co.neildutoit.deskbooking.db.entity.Booking;
 import za.co.neildutoit.deskbooking.db.entity.User;
-import za.co.neildutoit.deskbooking.dto.BookingDto;
-import za.co.neildutoit.deskbooking.dto.CoordinateDto;
-import za.co.neildutoit.deskbooking.dto.MessageDto;
-import za.co.neildutoit.deskbooking.dto.UserDto;
+import za.co.neildutoit.deskbooking.dto.*;
 import za.co.neildutoit.deskbooking.service.DeskBookingService;
 import za.co.neildutoit.deskbooking.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -40,11 +38,11 @@ public class BookingController {
   }
 
   @PostMapping("/{deskId}/reserve")
-  public MessageDto reserveDesk(@PathVariable long deskId, @RequestParam long userId) {
+  public DeletedBookingsDto reserveDesk(@PathVariable long deskId, @RequestParam long userId) {
     log.info("reserveDesk - deskId: {}, userId: {}", deskId, userId);
     userService.checkAdminUser();
-    deskBookingService.reserveDeskForUser(deskId, userId);
-    return new MessageDto("OK");
+    List<BookingDto> deletedBookings = deskBookingService.reserveDeskForUser(deskId, userId);
+    return new DeletedBookingsDto(deletedBookings);
   }
 
   @DeleteMapping("/{deskId}/reserve")

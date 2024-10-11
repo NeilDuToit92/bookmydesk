@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo list</title>
+    <link th:href="@{/css/font-awesome.min.css}" rel="stylesheet"/>
+    <link th:href="@{/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+<div class="sticky-header">
+    <div class="header-content">
+        <h2 th:text="'Welcome ' + ${name} + ' (ADMIN)'"></h2>
+        <h2>Booking admin</h2>
+        <div class="menu">
+            <button onclick="location.href='/admin'">Back</button>
+            <button onclick="location.href='/logout'">Logout</button>
+        </div>
+    </div>
+</div>
+<ul>
+    <li>Reporting page
+        <ul>
+            <li>'Bookings' page with selection (Group by user/desk) with a selectable date range
+                <ul>
+                    <li>Today</li>
+                    <li>This week</li>
+                    <li>This month</li>
+                    <li>This year</li>
+                    <li>Custom</li>
+                </ul>
+            </li>
+            <li>Advanced features
+                <ul>
+                    <li>People who booked less than twice for a week</li>
+                    <li>Absent people on a specific date/all people on a specific date</li>
+                </ul>
+            </li>
+            <li>Auto send reports (email/slack)</li>
+        </ul>
+    </li>
+    <li>Force page reload if API call returns forbidden to force re-auth</li>
+    <li>Desk layout
+        <ul>
+            <li>Enable/disable a desk</li>
+            <li>Save moved desks</li>
+            <li>Align multiple desks vertically/horizontally</li>
+            <li>Lock desk location</li>
+            <li>Add/remove desks</li>
+            <li>Set desk display name
+                <ul>
+                    <li>Scale/overflow text if more than 3 characters?</li>
+                </ul>
+            </li>
+            <li>Make popupInfo pretty</li>
+            <li>Upload new floor plan image
+                <ul>
+                    <li>Revert to previous (Save all previous)</li>
+                    <li>Download previous plan</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>Admin
+        <ul>
+            <li>Should be able to disable someone (if no longer with the company)
+                <ul>
+                    <li>Auto delete any bookings the user has</li>
+                </ul>
+            </li>
+            <li>Should be able to see and delete bookings for a user (single/all/date range)</li>
+            <li>Should be able to see and delete bookings for a desk (single/all/date range)</li>
+            <li>Make admin landing page better</li>
+            <li>Make users table pretty</li>
+        </ul>
+    </li>
+    <li>Low priority
+        <ul>
+            <li>Show keyboard shortcuts top right (Or somewhere)</li>
+            <li>Zoom/scaling</li>
+            <li>Add query param to set date
+                <ul>
+                    <li>Only allow if in valid range</li>
+                </ul>
+            </li>
+            <li>Auto disable user if not logged in for X weeks/months?
+                <ul>
+                    <li>Soft delete and prompt admins to check</li>
+                </ul>
+            </li>
+            <li>When opening booking page on weekends, it should default to the next working day</li>
+            <li>Ability to block booking on public holidays
+                <ul>
+                    <li>Show as red in top bar</li>
+                    <li>Some public API??</li>
+                </ul>
+            </li>
+        </ul>
+    </li>
+    <li>Cool features
+        <ul>
+            <li>Graph showing desk count booked by day</li>
+            <li>Users page - bookings should show on calendar layout instead of a table</li>
+        </ul>
+    </li>
+</ul>
+
+<div id="toast" class="toast"></div>
+</body>
+</html>

@@ -42,7 +42,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByDeskIdAndPermanentTrue(long deskId);
 
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.permanent = true")
-    Optional<Booking> findAllByUserIdAndPermanentTrue(long userId);
+    List<Booking> findAllByUserIdAndPermanentTrue(long userId);
 
     @Query("SELECT b FROM Booking b WHERE b.user.id = ?1 and b.date = ?2")
     Optional<Booking> findAllByUserIdAndDate(long userId, LocalDate date);

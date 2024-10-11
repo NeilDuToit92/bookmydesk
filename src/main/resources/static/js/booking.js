@@ -109,12 +109,20 @@ function fetchAndDisplayDesks() {
                 let hasPopup = false;
 
                 if (desk.bookedByCurrentUser) {
-                    deskCircle.classList.add("desk-currentuser");
-                    clickable = true;
+                    if (desk.status === 'RESERVED') {
+                        deskCircle.classList.add("desk-currentuser-reserved");
+                    } else {
+                        deskCircle.classList.add("desk-currentuser");
+                        clickable = true;
+                    }
                 }
 
                 if (desk.bookedBy) {
-                    bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
+                    if (desk.status === 'RESERVED') {
+                        bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy + ' (Reserved)';
+                    } else {
+                        bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
+                    }
                     hasPopup = true;
                 } else if (!currentUserHasBooking) {
                     bookedByParagraph.textContent = desk.displayId + ' - ' + "Click to book";

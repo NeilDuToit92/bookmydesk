@@ -12,7 +12,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     addSingleEventListeners();
     fetchBookedDates();
-
 });
 
 const maxDays = 29;

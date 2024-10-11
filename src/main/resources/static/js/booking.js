@@ -41,6 +41,8 @@ function blockHistoricAndFutureDates() {
     return false;
 }
 
+let currentFetchController = null;
+
 function fetchAndDisplayDesks() {
     const bookingDate = document.getElementById('bookingDate').value;
 
@@ -50,8 +52,22 @@ function fetchAndDisplayDesks() {
     const existingDesks = document.querySelectorAll('.desk-div');
     existingDesks.forEach(desk => desk.remove());
 
-    fetch('/api/desk?date=' + bookingDate)
-        .then(response => response.json())
+    // Abort the previous fetch if it exists
+    if (currentFetchController) {
+        currentFetchController.abort();
+    }
+
+    // Create a new AbortController
+    currentFetchController = new AbortController();
+    const { signal } = currentFetchController;
+
+    fetch('/api/desk?date=' + bookingDate, { signal })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
         .then(deskData => {
             deskData.forEach(desk => {
                 const deskDiv = document.createElement('div');
@@ -83,9 +99,6 @@ function fetchAndDisplayDesks() {
 
                 const popupInfo = document.createElement('div');
                 popupInfo.classList.add('popup-info');
-                // const statusParagraph = document.createElement('p');
-                // statusParagraph.textContent = desk.status;
-                // popupInfo.appendChild(statusParagraph);
                 const bookedByParagraph = document.createElement('p');
                 if (desk.bookedBy) {
                     bookedByParagraph.textContent = desk.displayId + ' - ' + desk.bookedBy;
@@ -102,7 +115,13 @@ function fetchAndDisplayDesks() {
 
             addRecurringEventListeners();
         })
-        .catch(error => console.error('Error fetching desk data:', error));
+        .catch(error => {
+            if (error.name === 'AbortError') {
+                console.log('Fetch aborted');
+            } else {
+                console.error('Error fetching desk data:', error);
+            }
+        });
 }
 
 function fetchBookedDates() {
@@ -133,7 +152,7 @@ function showPopup(element, overlay, bookPopup, cancelPopup) {
             cancelPopup.style.display = 'block';
             break;
         case "RESERVED":
-            //Cancel popup??
+            //Do nothing
             break;
     }
     return deskStatus;
@@ -360,12 +379,6 @@ function changeDate(days) {
 
     inputDate.value = currentDate.toISOString().slice(0, 10);
     inputDate.dispatchEvent(new Event('change'));
-}
-
-function getMonday(date) {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust for Sunday
-    return new Date(date.setDate(diff));
 }
 
 function displayWeekdays(bookedDays) {
